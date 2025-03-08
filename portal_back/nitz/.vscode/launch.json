@@ -1,0 +1,39 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "NitzzzApplication",
+            "request": "launch",
+            "mainClass": "com.example.nitz.NitzzzApplication.NitzzzApplication",
+            "projectName": "nitz"
+        },
+        {
+            "type": "java",
+            "name": "NitzzzApplication",
+            "request": "launch",
+            "mainClass": "com.example.NitzzzApplication",
+            "projectName": "nitz"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-NitzzzApplication<nitz>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.nitz.NitzzzApplication",
+            "projectName": "nitz",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=62428 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=nitz"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-JobleApplication<nitz>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.joble.joble.JobleApplication",
+            "projectName": "nitz",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
