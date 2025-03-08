@@ -1,0 +1,114 @@
+/* LoginCombined.css */
+.login-combined-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  line-height: 30px;
+}
+
+.content-wrapper {
+  display: flex;
+  width: 80%; /* Adjust as needed */
+  max-width: 1200px; /* Adjust as needed */
+  justify-content: space-between;
+}
+
+.new-to-naukri {
+  width: 30%;
+  padding: 20px;
+}
+
+.login-container {
+  width: 35%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.new-to-naukri h2,
+.login-container h2 {
+  margin-bottom: 20px;
+}
+
+.new-to-naukri ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.new-to-naukri li {
+  margin-bottom: 10px;
+}
+
+.new-to-naukri .register-free-button {
+  background-color: #00d084;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.login-container .forgot-password {
+  display: block;
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.login-container .login-button,
+.login-container .otp-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #00d084;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.login-container .or-divider  {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.login-container .otp {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.login-container .google-signin-container{
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  align-items: center;
+  box-shadow: #00d084 ;
+  border: #ccd4de 2px solid;
+  border-radius: 50px;
+}
+
+.google-signin-button{
+  text-decoration: none;
+  color: #3f3c3c;
+  font-weight: bold;
+}
+
+.google-icon{
+  padding: auto;
+  margin-top: 8px;
+}
