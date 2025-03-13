@@ -16,10 +16,15 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank(message = "Password cannot be blank")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
+    @NotBlank(message = "Mobile number cannot be blank")
     private String mobileNo;   
+    
+    @NotBlank(message = "Work status cannot be blank")
     private String workStatus; 
+    
+    @NotBlank(message = "Role cannot be blank")
     private String role; // "EMPLOYER" or "JOB_SEEKER"
 }

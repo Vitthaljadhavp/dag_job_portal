@@ -25,21 +25,20 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post("http://localhost:9091/api/users/register", formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post("http://localhost:9091/api/users/register", 
+        JSON.stringify(formData),  // Ensure JSON format
+        { headers: { "Content-Type": "application/json" } }
+      );
       console.log("User registered successfully:", response.data);
       alert("User registered successfully");
       navigate("/login");
     } catch (error) {
-      console.error("Error registering user:", error);
-      alert("Error registering user");
+      console.error("Error registering user:", error.response?.data || error.message);
+      alert("Error: " + (error.response?.data || "Failed to register"));
     }
   };
+  
 
   return (
     <>

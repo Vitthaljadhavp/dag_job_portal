@@ -11,4 +11,7 @@ import com.joble.joble.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
     Optional<User> findByEmail(String email);
+    // Optional<User> findByResetToken(String resetToken);
+    Optional<User> findFirstByResetToken(String resetToken);
+
 }

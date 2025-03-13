@@ -7,6 +7,8 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import JobSeekerDashboard from "./Pages/JobSeekerDashboard";
 import RecruiterDashboard from "./Pages/RecruiterDashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 
 
@@ -17,6 +19,8 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/job-seeker-dashboard" element={<JobSeekerDashboard />} />
       <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />

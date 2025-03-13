@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-JobleApplication<nitz>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.joble.joble.JobleApplication",
+            "projectName": "nitz",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

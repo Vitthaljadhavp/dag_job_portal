@@ -17,17 +17,11 @@ function Login() {
 
     try {
         const response = await axios.post("http://localhost:9091/api/users/login", { email, password });
-
-        const role = response.data.role?.trim().toLowerCase(); // Normalize role value
+        const role = response.data.role?.trim().toLowerCase();
         console.log("User Role:", role); // Debugging log
-
-        // Save token & role in localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", role);
-
         alert("Login Successful!");
-
-        // Redirect based on role
         setTimeout(() => {
             if (role === "admin") {
                 navigate("/admin-dashboard");
@@ -38,18 +32,16 @@ function Login() {
             } else {
                 navigate("/home");
             }
-        }, 500); // Delay navigation slightly
+        }, 500);
     } catch (err) {
         setError("Invalid email or password");
     }
-};
-
+  };
 
   return (
     <>
       <Navbar />
       <div className="login-combined-container">
-        {/* NewToNaukri Section */}
         <div className="new-to-naukri">
           <h2>New to DAG?</h2>
           <ul>
@@ -63,7 +55,6 @@ function Login() {
           </button>
         </div>
 
-        {/* Login Section */}
         <div className="login-container">
           <h2>Login</h2>
           {error && <p className="error-message">{error}</p>}
@@ -74,7 +65,7 @@ function Login() {
             <label>Password</label>
             <input type="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-            <a href="#forgot" className="forgot-password">Forgot Password?</a> <br />
+            <a href="/forgot-password" className="forgot-password">Forgot Password?</a> <br />
             <button type="submit" className="login-button">Login</button> <br />
           </form>
           

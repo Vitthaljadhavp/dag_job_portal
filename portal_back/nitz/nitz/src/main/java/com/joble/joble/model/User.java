@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 @Data
@@ -32,5 +33,8 @@ public class User {
     private String workStatus; // "Experienced" or "Fresher"
 
     private String role; // "EMPLOYER" or "JOB_SEEKER"
-}
 
+    @Column(unique = true)
+    private String resetToken;
+    private Date tokenExpiry;
+}

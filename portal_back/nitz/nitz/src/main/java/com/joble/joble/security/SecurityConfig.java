@@ -11,9 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
@@ -33,27 +31,28 @@ public class SecurityConfig {
     }
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .cors(cors -> cors.configurationSource(request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(List.of("http://localhost:3000")); 
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-            config.setAllowedHeaders(List.of("*"));
-            config.setAllowCredentials(true);
-            return config;
-        }))
-        .csrf(csrf -> csrf.disable()) 
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()  // ✅ Allow job seekers to view jobs
-            .requestMatchers("/api/jobs/**").hasAnyAuthority("ROLE_EMPLOYER") // Employers can post/update/delete
-            .anyRequest().authenticated()
-        )
-        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(List.of("http://localhost:3000")); 
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                config.setAllowedHeaders(List.of("*"));
+                config.setAllowCredentials(true);
+                return config;
+            }))
+            .csrf(csrf -> csrf.disable()) 
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/users/register", "/api/users/login", "/api/users/forgot-password", "/api/users/reset-password").permitAll()
+                .requestMatchers("/error").permitAll() // ✅ Allow Spring's error handling endpoint
+                .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll() // ✅ Explicitly allow forgot-password POST requests
+                .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
+                .requestMatchers("/api/jobs/**").hasAnyAuthority("ROLE_EMPLOYER")
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-}
-
+        return http.build();
+    }
 }

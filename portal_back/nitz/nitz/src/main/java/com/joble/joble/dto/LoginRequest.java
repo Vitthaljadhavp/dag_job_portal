@@ -7,8 +7,11 @@ public class LoginRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
+    
     @NotBlank(message = "Password is required")
     private String password;
+
+    private String resetToken;
 
     // Getters and setters
     public String getEmail() {
@@ -25,5 +28,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 }
