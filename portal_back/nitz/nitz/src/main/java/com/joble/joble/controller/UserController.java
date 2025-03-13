@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
     Optional<User> userOpt = userService.findUserByEmail(loginRequest.getEmail());
     
     if (userOpt.isEmpty()) {
@@ -94,19 +94,23 @@ public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
         }
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
-        try {
-            String token = request.get("token");
-            String newPassword = request.get("password");
-            Optional<User> userOpt = userService.findUserByResetToken(token);
-            if (userOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
-            }
-            userService.updatePassword(userOpt.get(), newPassword);
-            return ResponseEntity.ok("Password successfully updated");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting password: " + e.getMessage());
+    @PutMapping("/reset-password")
+public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+    try {
+        String token = request.get("token");
+        String newPassword = request.get("password");
+
+        Optional<User> userOpt = userService.findUserByResetToken(token);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
         }
+
+        userService.updatePassword(userOpt.get(), newPassword);
+        return ResponseEntity.ok("Password successfully updated");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error resetting password: " + e.getMessage());
     }
+}
+
 }

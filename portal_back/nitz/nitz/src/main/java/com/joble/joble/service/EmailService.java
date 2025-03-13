@@ -44,7 +44,7 @@ public void sendEmail(String to, String subject, String body) {
 
     // ✅ Method to send password reset email
     public void sendResetEmail(String to, String resetToken) {
-        String resetLink = "http://localhost:3000/reset-password?token=" + resetToken;
+        String resetLink = "http://localhost:3001/reset-password?token=" + resetToken;
         String subject = "Password Reset Request";
         String body = "Click the link below to reset your password:\n" + resetLink +
                       "\n\nIf you did not request this, please ignore this email.";
