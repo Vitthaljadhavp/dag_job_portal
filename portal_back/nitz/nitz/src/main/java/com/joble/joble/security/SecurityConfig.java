@@ -1,5 +1,6 @@
 package com.joble.joble.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,8 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 public class SecurityConfig {
@@ -35,24 +36,34 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of("http://localhost:3001")); 
+                config.setAllowedOrigins(List.of("*")); 
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowCredentials(true);
                 return config;
             }))
             .csrf(csrf -> csrf.disable()) 
-            .authorizeHttpRequests(auth -> auth
+            .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/api/users/register", "/api/users/login", "/api/users/forgot-password", "/api/users/reset-password").permitAll()
+                .requestMatchers("/oauth2/**", "/login/**", "/auth/user").permitAll() // ✅ Allow OAuth2 authentication
                 .requestMatchers("/error").permitAll() // ✅ Allow Spring's error handling endpoint
-                .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll() // ✅ Explicitly allow forgot-password POST requests
+                .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
                 .requestMatchers("/api/jobs/**").hasAnyAuthority("ROLE_EMPLOYER")
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(endpoint -> 
+                    endpoint.baseUri("/oauth2/authorization")
+                )
+                .redirectionEndpoint(endpoint -> 
+                    endpoint.baseUri("/login/oauth2/code/*")
+                )
+                .defaultSuccessUrl("http://localhost:3000/dashboard", true) // ✅ Redirect after successful login
+            )
             .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
+            
         return http.build();
     }
 }
