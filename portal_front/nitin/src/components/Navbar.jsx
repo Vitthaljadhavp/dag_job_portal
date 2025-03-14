@@ -29,7 +29,7 @@ function Navbar() {
             placeholder="Search jobs here"
             className="search-input"
           />
-          <button className="search-button">Q</button>
+          <button className="search-button"></button>
         </div>
         <ul className="navbar-actions">
           <li>

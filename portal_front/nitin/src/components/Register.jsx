@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
+import GitHubLogin from "react-github-login";
+import { LinkedIn } from "react-linkedin-login-oauth2";
+import Footer from "./Footer";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +13,7 @@ const Register = () => {
     password: "",
     mobile: "",
     workStatus: "fresher",
-    role: "job_seeker", // Default role
+    role: "job_seeker",
   });
 
   const navigate = useNavigate();
@@ -26,8 +29,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:9091/api/users/register", 
-        JSON.stringify(formData),  // Ensure JSON format
+      const response = await axios.post(
+        "http://localhost:9091/api/users/register",
+        JSON.stringify(formData),
         { headers: { "Content-Type": "application/json" } }
       );
       console.log("User registered successfully:", response.data);
@@ -38,17 +42,31 @@ const Register = () => {
       alert("Error: " + (error.response?.data || "Failed to register"));
     }
   };
-  
+
+  const handleGitHubSuccess = async (response) => {
+    console.log("GitHub Auth Code:", response.code);
+    // Here, you will send 'response.code' to your backend for token exchange
+  };
+
+  const handleGitHubFailure = (error) => {
+    console.error("GitHub Login Failed:", error);
+  };
 
   return (
     <>
+      {/* Navbar */}
       <nav className="navbar">
-        <div className="navbar-logo">DAG Job Portal</div>
-        <div className="navbar-login">
-          Already Registered? <a href="Login">Login here</a>
+        <div className="navbar-logo">
+          <img src="/logo.png" alt="Logo" className="logo-img" />
+          DAG Job Portal
+        </div>
+        <div className="navbar-login" style={{marginRight:"50px"}}>
+          Already Registered? <a href="Login" style={{color:"black"}}>Login here</a>
         </div>
       </nav>
-      <div className="register-page">
+
+      <div className="register-page" style={{marginBottom:"75px"}}>
+        {/* Left Section: Info Panel */}
         <div className="register-info">
           <img
             src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
@@ -62,8 +80,12 @@ const Register = () => {
             <li>✅ Find a job and grow your career</li>
           </ul>
         </div>
+
+        {/* Right Section: Registration Form */}
         <div className="register-container">
           <h2>Create your DAG Profile</h2>
+
+          {/* Google Signup Button */}
           <button className="google-button">
             <img
               src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
@@ -72,7 +94,39 @@ const Register = () => {
             />
             Continue with Google
           </button>
+
+          <div className="linkedin-signin-container">
+            <LinkedIn
+              clientId={process.env.REACT_APP_LINKEDIN_CLIENT_ID}
+              redirectUri={process.env.REACT_APP_LINKEDIN_REDIRECT_URI}
+              onSuccess={(code) => console.log("LinkedIn Code:", code)}
+              onError={(error) => console.error(error)}
+            >
+              {({ linkedInLogin }) => (
+                <button className="linkedin-signin-button" onClick={linkedInLogin}>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" />
+                  Sign in with LinkedIn
+                </button>
+              )}
+            </LinkedIn>
+          </div>
+
+          
+          
+          <div className="github-signin-container">
+            <GitHubLogin
+              clientId={process.env.REACT_APP_GITHUB_CLIENT_ID}
+              redirectUri={process.env.REACT_APP_GITHUB_REDIRECT_URI}
+              onSuccess={handleGitHubSuccess}
+              onFailure={handleGitHubFailure}
+              buttonText="Sign in with GitHub"
+              className="github-signin-button"
+            />
+          </div>
+
+
           <form onSubmit={handleSubmit}>
+            {/* Full Name */}
             <label>Full Name</label>
             <input
               type="text"
@@ -82,6 +136,8 @@ const Register = () => {
               onChange={handleChange}
               required
             />
+
+            {/* Email */}
             <label>Email</label>
             <input
               type="email"
@@ -91,6 +147,8 @@ const Register = () => {
               onChange={handleChange}
               required
             />
+
+            {/* Password */}
             <label>Password</label>
             <input
               type="password"
@@ -100,6 +158,8 @@ const Register = () => {
               onChange={handleChange}
               required
             />
+
+            {/* Mobile Number */}
             <label>Mobile No.</label>
             <input
               type="tel"
@@ -110,16 +170,17 @@ const Register = () => {
               required
             />
 
-<div className="role-container">
-    <label htmlFor="role">Role</label>
-    <select id="role" name="role">
-        <option value="job_seeker">Job Seeker</option>
-        <option value="recruiter">Recruiter</option>
-        <option value="admin">Admin</option>
-    </select>
-</div>
+            {/* Role Selection */}
+            <div className="role-container">
+              <label htmlFor="role">Role</label>
+              <select id="role" name="role" value={formData.role} onChange={handleChange}>
+                <option value="job_seeker">Job Seeker</option>
+                <option value="recruiter">Recruiter</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
 
-
+            {/* Work Status Selection */}
             <label>Work status</label>
             <div className="work-status-container">
               <label
@@ -138,6 +199,7 @@ const Register = () => {
                   </div>
                 </div>
               </label>
+
               <label
                 className={`work-status-option ${formData.workStatus === "fresher" ? "selected" : ""}`}
                 onClick={() => handleWorkStatusChange("fresher")}
@@ -155,10 +217,16 @@ const Register = () => {
                 </div>
               </label>
             </div>
-            <button type="submit">Submit</button>
+
+          
+            {/* Submit Button */}
+            <button type="submit">Register</button>
           </form>
         </div>
+      
       </div>
+
+      <Footer />
     </>
   );
 };

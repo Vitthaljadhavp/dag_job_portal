@@ -16,32 +16,50 @@ function Login() {
     setError("");
 
     try {
-        const response = await axios.post("http://localhost:9091/api/users/login", { email, password });
-        const role = response.data.role?.trim().toLowerCase();
-        console.log("User Role:", role); // Debugging log
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", role);
-        alert("Login Successful!");
-        setTimeout(() => {
-            if (role === "admin") {
-                navigate("/admin-dashboard");
-            } else if (role === "job_seeker") {
-                navigate("/job-seeker-dashboard");
-            } else if (role === "recruiter") {
-                navigate("/recruiter-dashboard");
-            } else {
-                navigate("/home");
-            }
-        }, 500);
+      const response = await axios.post("http://localhost:9091/api/users/login", { email, password });
+      const role = response.data.role?.trim().toLowerCase();
+      console.log("User Role:", role);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", role);
+      alert("Login Successful!");
+      setTimeout(() => {
+        if (role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (role === "job_seeker") {
+          navigate("/job-seeker-dashboard");
+        } else if (role === "recruiter") {
+          navigate("/recruiter-dashboard");
+        } else {
+          navigate("/home");
+        }
+      }, 500);
     } catch (err) {
-        setError("Invalid email or password");
+      setError("Invalid email or password");
     }
   };
 
+  
+
   return (
     <>
-      <Navbar />
-      <div className="login-combined-container">
+      {/* Navbar */}
+<nav className="navbar">
+  <div className="navbar-left">
+    <div className="navbar-logo">
+      <img src="/logo.png" alt="Logo" className="logo-img" />
+      <span className="portal-name">DAG Job Portal</span>
+    </div>
+  </div>
+
+  {/* Login & Signup on Right */}
+  <div className="navbar-right">
+    <a href="/" className="signup-button" style={{marginRight:"50px"}}>Sign Up</a>
+  </div>
+</nav>
+
+
+
+      <div className="login-combined-container" style={{margin: "50px 50px 150px 50px"}}>
         <div className="new-to-naukri">
           <h2>New to DAG?</h2>
           <ul>
@@ -68,17 +86,13 @@ function Login() {
             <a href="/forgot-password" className="forgot-password">Forgot Password?</a> <br />
             <button type="submit" className="login-button">Login</button> <br />
           </form>
+
           
-          <a href="#otp" className="otp">Use OTP to Login</a>
           <div className="or-divider">Or</div> 
-          <div className="google-signin-container">
-            <a href="#google" className="google-signin-button">
-              <img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" className="google-icon" alt="Google Sign-in" />
-              Sign in with Google
-            </a>
-          </div>
+          <a href="#otp" className="otp">Use OTP to Login</a>
         </div>
-      </div>
+
+        </div>
       <Footer />
     </>
   );

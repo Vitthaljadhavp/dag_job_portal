@@ -7,6 +7,18 @@
     color: white;
   }
 
+  /* Logo */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  margin-left: 100px;
+}
+
+.navbar-logo img {
+  width: 40px;
+  margin-right: 10px;
+}
+
   /* Left Side: Register Info */
 .register-info {
   width: 30%;
@@ -17,7 +29,20 @@
   text-align: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   display: inline-block; 
-  white-space: nowrap; 
+  animation: slideIn 0.8s ease-out;
+  /* white-space: nowrap;  */
+}
+
+/* Slide-in animation for registration form */
+@keyframes slideIn {
+  from {
+      transform: translateX(100%);
+      opacity: 0;
+  }
+  to {
+      transform: translateX(0);
+      opacity: 1;
+  }
 }
 
 
@@ -36,6 +61,7 @@
   padding: 0;
   font-size: 14px;
   color: #444;
+  text-align: start;
 }
 
 .register-info li {
@@ -61,14 +87,14 @@
   }
   
   .register-container {
-    width: 50%;
+    width: 45%;
     margin-right: 40px;
     padding: 25px;
     border-radius: 8px;
     background-color: #ffffff;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    
+    animation: slideIn 0.8s ease-out;
   }
   
   h2 {
@@ -97,6 +123,13 @@
     border-color: #00d084;
     outline: none;
   }
+
+  /* Hover Effects */
+.register-container input:hover,
+.register-container button:hover {
+    transform: scale(1.02);
+    transition: 0.3s ease-in-out;
+}
   
   /* Work Status Section */
   .work-status-container {
@@ -113,7 +146,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-align: left;
+    text-align: center;
     background-color: #fff;
     flex: 1;
     padding: 10px;
@@ -124,6 +157,7 @@
   
   .work-status-option:hover {
     border-color: #00d084;
+    transform: scale(1.05);
   }
   
   .work-status-option.selected {
@@ -174,6 +208,7 @@
   
   .register-container button:hover {
     background-color: #00d084;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   }
 
   input[type="text"],
@@ -221,6 +256,7 @@
   
   .google-button:hover {
     background-color: #00d084;
+    transform: scale(1.05);
   }
   
   .google-icon {
@@ -231,7 +267,7 @@
 
 .register-page {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: flex-start;
   gap: 40px;
   margin-top: 50px;
@@ -240,7 +276,7 @@
 .role-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Aligns label and select box to the left */
+  align-items: anchor-center; /* Aligns label and select box to the left */
   width: 100%;
   margin-bottom: 15px;
 }
@@ -251,4 +287,11 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
+  transition: 0.3s ease;
+}
+
+
+.role-container select:hover {
+  border-color: #00d084;
+  transform: scale(1.02);
 }
