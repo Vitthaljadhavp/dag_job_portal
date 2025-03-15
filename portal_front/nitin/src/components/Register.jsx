@@ -30,7 +30,7 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:9091/api/users/register",
+        "http://localhost:9092/api/users/register",
         JSON.stringify(formData),
         { headers: { "Content-Type": "application/json" } }
       );
