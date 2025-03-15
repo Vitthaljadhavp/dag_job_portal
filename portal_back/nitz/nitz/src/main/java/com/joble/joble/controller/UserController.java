@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.servlet.http.HttpServletRequest; // Import required package
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -52,33 +54,27 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-    Optional<User> userOpt = userService.findUserByEmail(loginRequest.getEmail());
-    
-    if (userOpt.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        Optional<User> userOpt = userService.findUserByEmail(loginRequest.getEmail());
+        
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+
+        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole());
+        UserResponse userResponse = new UserResponse(
+                user.getId(), user.getName(), user.getEmail(),
+                user.getMobileNo(), user.getWorkStatus(), user.getRole(), token
+        );
+        return ResponseEntity.ok(userResponse);
     }
-
-    User user = userOpt.get();
-    System.out.println("Stored Hashed Password: " + user.getPassword());
-    System.out.println("Entered Password: " + loginRequest.getPassword());
-    System.out.println("Password Match Result: " + passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()));
-
-    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-    }
-
-    String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole());
-    UserResponse userResponse = new UserResponse(
-            user.getId(), user.getName(), user.getEmail(),
-            user.getMobileNo(), user.getWorkStatus(), user.getRole(), token
-    );
-    return ResponseEntity.ok(userResponse);
-}
-
-
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam String email, HttpServletRequest request) {
         try {
             Optional<User> userOpt = userService.findUserByEmail(email);
             if (userOpt.isEmpty()) {
@@ -87,7 +83,14 @@ public class UserController {
             User user = userOpt.get();
             String resetToken = UUID.randomUUID().toString();
             userService.saveResetToken(user, resetToken);
-            emailService.sendResetEmail(user.getEmail(), resetToken);
+            
+            // Get the frontend URL dynamically
+            String frontendUrl = request.getHeader("Origin");  
+            if (frontendUrl == null || frontendUrl.isEmpty()) {
+                frontendUrl = "http://localhost";  // Default fallback
+            }
+            
+            emailService.sendResetEmail(user.getEmail(), resetToken, frontendUrl);
             return ResponseEntity.ok("Password reset link sent to email");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing forgot password request: " + e.getMessage());
@@ -95,22 +98,21 @@ public class UserController {
     }
 
     @PutMapping("/reset-password")
-public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
-    try {
-        String token = request.get("token");
-        String newPassword = request.get("password");
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            String token = request.get("token");
+            String newPassword = request.get("password");
 
-        Optional<User> userOpt = userService.findUserByResetToken(token);
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+            Optional<User> userOpt = userService.findUserByResetToken(token);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+            }
+
+            userService.updatePassword(userOpt.get(), newPassword);
+            return ResponseEntity.ok("Password successfully updated");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error resetting password: " + e.getMessage());
         }
-
-        userService.updatePassword(userOpt.get(), newPassword);
-        return ResponseEntity.ok("Password successfully updated");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error resetting password: " + e.getMessage());
     }
-}
-
 }

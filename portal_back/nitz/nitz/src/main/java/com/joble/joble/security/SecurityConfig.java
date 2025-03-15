@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -34,19 +36,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of("*")); 
-                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-                config.setAllowedHeaders(List.of("*"));
-                config.setAllowCredentials(true);
-                return config;
-            }))
-            .csrf(csrf -> csrf.disable()) 
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Added CORS
+            .csrf(csrf -> csrf.disable()) // ✅ Disable CSRF for APIs
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/api/users/register", "/api/users/login", "/api/users/forgot-password", "/api/users/reset-password").permitAll()
-                .requestMatchers("/oauth2/**", "/login/**", "/auth/user").permitAll() // ✅ Allow OAuth2 authentication
-                .requestMatchers("/error").permitAll() // ✅ Allow Spring's error handling endpoint
+                .requestMatchers("/oauth2/**", "/login/**", "/auth/user").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
                 .requestMatchers("/api/jobs/**").hasAnyAuthority("ROLE_EMPLOYER")
@@ -54,16 +49,28 @@ public class SecurityConfig {
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2Login(oauth2 -> oauth2
-                .authorizationEndpoint(endpoint -> 
-                    endpoint.baseUri("/oauth2/authorization")
-                )
-                .redirectionEndpoint(endpoint -> 
-                    endpoint.baseUri("/login/oauth2/code/*")
-                )
-                .defaultSuccessUrl("http://localhost:3000/dashboard", true) // ✅ Redirect after successful login
+                .authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorization"))
+                .redirectionEndpoint(endpoint -> endpoint.baseUri("/login/oauth2/code/*"))
+                .defaultSuccessUrl("http://localhost:3000/dashboard", true)
             )
             .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-            
+
         return http.build();
     }
+
+    // ✅ CORS Configuration
+    @Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOriginPatterns(List.of("*")); // Allow all origins (for development)
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    configuration.setExposedHeaders(List.of("Authorization"));
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
+
 }
