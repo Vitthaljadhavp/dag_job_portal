@@ -2,90 +2,78 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./JobSeekerDashboard.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Footer from "../components/Footer";
-
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
   const [visibleSections, setVisibleSections] = useState(["personalDetails"]);
 
-  // Personal Details State
+  // Personal Details
   const [fullName, setFullName] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [dob, setDob] = useState("");
-  const [gender, setGender] = useState("Male"); // Default value
+  const [gender, setGender] = useState("Male");
 
-  // Education Section
-  const [educationList, setEducationList] = useState([{}]);
+  // Education
+  const [educationList, setEducationList] = useState([{ university: "", degree: "", branch: "", percentage: "", passingYear: "" }]);
+  const addEducation = () => setEducationList([...educationList, { university: "", degree: "", branch: "", percentage: "", passingYear: "" }]);
+  const removeEducation = (index) => setEducationList(educationList.filter((_, i) => i !== index));
 
-  const addEducation = () => {
-    setEducationList([...educationList, {}]);
-  };
-
-  const removeEducation = (index) => {
-    const updatedList = educationList.filter((_, i) => i !== index);
-    setEducationList(updatedList);
-  };
-
-  // Skills Section
+  // Skills
   const [skills, setSkills] = useState([]);
   const [skillInput, setSkillInput] = useState("");
-
   const handleSkillKeyDown = (event) => {
     if (event.key === "Enter" && skillInput.trim() !== "") {
       event.preventDefault();
       setSkills([...skills, skillInput.trim()]);
-      setSkillInput(""); // Clear input
+      setSkillInput("");
     }
   };
+  const removeSkill = (index) => setSkills(skills.filter((_, i) => i !== index));
 
-  const removeSkill = (index) => {
-    setSkills(skills.filter((_, i) => i !== index));
-  };
-
-  // Experience Section
-  const [experiences, setExperiences] = useState([
-    { company: "", role: "", startDate: "", endDate: "", jobType: "Internship", mode: "Remote" }
-  ]);
-
-  const addExperience = () => {
-    setExperiences([
-      ...experiences,
-      { company: "", role: "", startDate: "", endDate: "", jobType: "Internship", mode: "Remote" }
-    ]);
-  };
-
-  const removeExperience = (index) => {
-    setExperiences(experiences.filter((_, i) => i !== index));
-  };
-
+  // Experience
+  const [experiences, setExperiences] = useState([{ company: "", role: "", startDate: "", endDate: "", jobType: "Internship", mode: "Remote" }]);
+  const addExperience = () => setExperiences([...experiences, { company: "", role: "", startDate: "", endDate: "", jobType: "Internship", mode: "Remote" }]);
+  const removeExperience = (index) => setExperiences(experiences.filter((_, i) => i !== index));
   const updateExperience = (index, field, value) => {
-    const updatedExperiences = [...experiences];
-    updatedExperiences[index][field] = value;
-    setExperiences(updatedExperiences);
+    const updated = [...experiences];
+    updated[index][field] = value;
+    setExperiences(updated);
   };
 
   // Profile Picture
   const [profilePic, setProfilePic] = useState(null);
-
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+
       const reader = new FileReader();
+      
       reader.onloadend = () => {
-        setProfilePic(reader.result);
+      
+      setProfilePic(reader.result);
+      
       };
+      
       reader.readAsDataURL(file);
-    }
-  };
+      
+      }
+      
+      };
+      
+       
+      
+      const removeProfilePic = () => {
+      
+      setProfilePic(null);
+      
+      };
+      
 
-  const removeProfilePic = () => {
-    setProfilePic(null);
-  };
-
-  // About Me Section
+  // About Me
   const [aboutMe, setAboutMe] = useState("");
   const [wordCount, setWordCount] = useState(0);
 
@@ -98,48 +86,108 @@ const JobSeekerDashboard = () => {
     setWordCount(words.length);
   };
 
-  // Form Validation
-  const isFormComplete = () => {
-    return (
-      fullName.trim() !== "" &&
-      mobile.trim() !== "" &&
-      email.trim() !== "" &&
-      address.trim() !== "" &&
-      dob.trim() !== "" &&
-      gender.trim() !== "" &&
-      educationList.length > 0 &&
-      skills.length > 0 &&
-      experiences.length > 0 &&
-      aboutMe.trim() !== "" &&
-      profilePic !== null
-    );
-  };
 
-  // Handle Form Submission
-  const handleSubmit = () => {
-    if (!isFormComplete()) {
+  // Form Submission
+  const handleSubmit = async () => {
+    console.log("Submitting profile...");
+  
+    console.log("Full Name:", fullName);
+    console.log("Mobile:", mobile);
+    console.log("Email:", email);
+    console.log("Address:", address);
+    console.log("DOB:", dob);
+    console.log("Gender:", gender);
+    console.log("Skills:", skills);
+    console.log("Experiences:", experiences);
+    console.log("About Me:", aboutMe);
+    console.log("Profile Pic:", profilePic);
+  
+    if (!fullName || !mobile || !email || !address || !dob || !gender || !skills.length || !experiences.length || !aboutMe || !profilePic) {
       alert("Please fill in all required fields before submitting.");
+      console.warn("Form validation failed! Missing fields detected.");
       return;
     }
-    alert("Profile submitted successfully!");
-  };
-
-  const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-      localStorage.removeItem("authToken"); // If using JWT
-      sessionStorage.clear(); // If using session storage
-      navigate("/login");
+  
+    const formData = new FormData();
+    formData.append("fullName", fullName);
+    formData.append("mobile", mobile);
+    formData.append("email", email);
+    formData.append("address", address);
+    formData.append("dob", dob);
+    formData.append("gender", gender);
+    formData.append("aboutMe", aboutMe);
+    formData.append("profilePic", profilePic);
+  
+    console.log("Adding education details...");
+    educationList.forEach((edu, index) => {
+      console.log(`Education ${index}:`, edu);
+      formData.append(`educationList[${index}].university`, edu.university);
+      formData.append(`educationList[${index}].degree`, edu.degree);
+      formData.append(`educationList[${index}].branch`, edu.branch);
+      formData.append(`educationList[${index}].percentage`, edu.percentage);
+      formData.append(`educationList[${index}].passingYear`, edu.passingYear);
+    });
+  
+    console.log("Adding skills...");
+    skills.forEach((skill, index) => {
+      console.log(`Skill ${index}:`, skill);
+      formData.append(`skills[${index}]`, skill);
+    });
+  
+    console.log("Adding experience details...");
+    experiences.forEach((exp, index) => {
+      console.log(`Experience ${index}:`, exp);
+      formData.append(`experiences[${index}].company`, exp.company);
+      formData.append(`experiences[${index}].role`, exp.role);
+      formData.append(`experiences[${index}].startDate`, exp.startDate);
+      formData.append(`experiences[${index}].endDate`, exp.endDate);
+      formData.append(`experiences[${index}].jobType`, exp.jobType);
+      formData.append(`experiences[${index}].mode`, exp.mode);
+    });
+  
+    try {
+      console.log("Sending request to backend...");
+      const response = await axios.post("http://localhost:8080/api/job-seekers/register", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+  
+      if (response.status === 201) {
+        console.log("Profile submitted successfully!");
+        alert("Profile submitted successfully!");
+        navigate("/joblistingdashboard");
+      }
+    } catch (error) {
+      console.error("Failed to submit profile. Error:", error);
+      alert("Failed to submit profile. Please try again.");
     }
   };
   
 
-const toggleSection = (section) => {
-    if (!visibleSections.includes(section)) {
-      setVisibleSections([...visibleSections, section]);
-    }
-  };
+  const handleLogout = () => {
 
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    
+    if (confirmLogout) {
+    
+    localStorage.removeItem("authToken"); // If using JWT
+    
+    sessionStorage.clear(); // If using session storage
+    
+    navigate("/login");
+    
+    }
+    
+    };
+
+  const toggleSection = (section) => {
+
+    if (!visibleSections.includes(section)) {
+    
+    setVisibleSections([...visibleSections, section]);
+    
+    }
+    
+    };
 
   return (
 
@@ -459,19 +507,18 @@ const toggleSection = (section) => {
         <button 
           className="btn btn-success mt-4"
           onClick={handleSubmit}
-          disabled={!isFormComplete}
+          // disabled={!isFormComplete}
           >Submit Profile
         </button>
 
-        {/* Warning Message (if any field is missing) */}
+        {/* Warning Message (if any field is missing)
         {!isFormComplete && (
           <div className="text-danger mt-2">
             Please fill in all required fields before submitting.
           </div>
-        )}
+        )} */}
       </div>   
     </div>
-    
   </div>
   
 
