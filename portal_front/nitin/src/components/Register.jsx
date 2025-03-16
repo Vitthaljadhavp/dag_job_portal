@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
-import GitHubLogin from "react-github-login";
+import {useGitHubLogin} from "react-github-login-button";
 import { LinkedIn } from "react-linkedin-login-oauth2";
 import Footer from "./Footer";
 
@@ -30,7 +30,7 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:9092/api/users/register",
+        "http://localhost:9091/api/users/register",
         JSON.stringify(formData),
         { headers: { "Content-Type": "application/json" } }
       );
@@ -52,6 +52,14 @@ const Register = () => {
     console.error("GitHub Login Failed:", error);
   };
 
+  const handleGitHubLogin = () => {
+    const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID;
+    const redirectUri = process.env.REACT_APP_GITHUB_REDIRECT_URI;
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email`;
+    window.location.href = githubAuthUrl;
+};
+
+  
   return (
     <>
       {/* Navbar */}
@@ -60,12 +68,12 @@ const Register = () => {
           <img src="/logo.png" alt="Logo" className="logo-img" />
           DAG Job Portal
         </div>
-        <div className="navbar-login" style={{marginRight:"50px"}}>
-          Already Registered? <a href="Login" style={{color:"black"}}>Login here</a>
+        <div className="navbar-login" style={{ marginRight: "50px" }}>
+          Already Registered? <a href="Login" style={{ color: "black" }}>Login here</a>
         </div>
       </nav>
 
-      <div className="register-page" style={{marginBottom:"75px"}}>
+      <div className="register-page" style={{ marginBottom: "75px" }}>
         {/* Left Section: Info Panel */}
         <div className="register-info">
           <img
@@ -95,34 +103,33 @@ const Register = () => {
             Continue with Google
           </button>
 
-          <div className="linkedin-signin-container">
-            <LinkedIn
-              clientId={process.env.REACT_APP_LINKEDIN_CLIENT_ID}
-              redirectUri={process.env.REACT_APP_LINKEDIN_REDIRECT_URI}
-              onSuccess={(code) => console.log("LinkedIn Code:", code)}
-              onError={(error) => console.error(error)}
-            >
-              {({ linkedInLogin }) => (
-                <button className="linkedin-signin-button" onClick={linkedInLogin}>
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" />
-                  Sign in with LinkedIn
-                </button>
-              )}
-            </LinkedIn>
-          </div>
+          <LinkedIn
+            clientId={process.env.REACT_APP_LINKEDIN_CLIENT_ID}
+            redirectUri={process.env.REACT_APP_LINKEDIN_REDIRECT_URI}
+            scope="r_emailaddress r_liteprofile"
+            onSuccess={(code) => console.log("LinkedIn Code:", code)}
+            onError={(error) => console.error(error)}
+          >
+            {({ linkedInLogin }) => (
+              <button className="linkedin-signin-button" onClick={linkedInLogin}>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+                  alt="LinkedIn"
+                />
+                Sign in with LinkedIn
+              </button>
+            )}
+          </LinkedIn>
 
-          
-          
           <div className="github-signin-container">
-            <GitHubLogin
-              clientId={process.env.REACT_APP_GITHUB_CLIENT_ID}
-              redirectUri={process.env.REACT_APP_GITHUB_REDIRECT_URI}
-              onSuccess={handleGitHubSuccess}
-              onFailure={handleGitHubFailure}
-              buttonText="Sign in with GitHub"
-              className="github-signin-button"
-            />
-          </div>
+  <button className="github-signin-button" onClick={handleGitHubLogin}>
+    <img
+      src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+      alt="GitHub"
+    />
+    Sign in with GitHub
+  </button>
+</div>
 
 
           <form onSubmit={handleSubmit}>
@@ -218,12 +225,10 @@ const Register = () => {
               </label>
             </div>
 
-          
             {/* Submit Button */}
             <button type="submit">Register</button>
           </form>
         </div>
-      
       </div>
 
       <Footer />

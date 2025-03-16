@@ -193,7 +193,8 @@
   }
   
   /* Button */
-  .register-container button {
+  .register-container button,
+  .github-signin-button {
     width: 100%;
     padding: 12px;
     background-color: #00d084;
@@ -206,7 +207,8 @@
     transition: background 0.3s ease;
   }
   
-  .register-container button:hover {
+  .register-container button:hover,
+  .github-signin-button:hover {
     background-color: #00d084;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   }
@@ -238,7 +240,8 @@
     color: #666;
   }
 
-  .google-button {
+  .google-button,
+  .github-signin-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -254,12 +257,14 @@
     transition: background 0.3s ease;
   }
   
-  .google-button:hover {
+  .google-button:hover,
+   .github-signin-button:hover{
     background-color: #00d084;
     transform: scale(1.05);
   }
   
-  .google-icon {
+  .google-icon,
+  .github-icon {
     width: 20px;
     height: 20px;
     margin-right: 10px;
@@ -295,3 +300,10 @@
   border-color: #00d084;
   transform: scale(1.02);
 }
+
+.github-signin-button img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
