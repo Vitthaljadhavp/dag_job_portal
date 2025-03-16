@@ -55,7 +55,8 @@ const Register = () => {
   const handleGitHubLogin = () => {
     const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID;
     const redirectUri = process.env.REACT_APP_GITHUB_REDIRECT_URI;
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email`;
+    // const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email`;
+    const githubAuthUrl = `http://localhost:9091/oauth2/authorization/github`;
     window.location.href = githubAuthUrl;
 };
 

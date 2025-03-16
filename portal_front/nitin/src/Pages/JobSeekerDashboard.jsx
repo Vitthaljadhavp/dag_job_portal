@@ -147,14 +147,14 @@ const JobSeekerDashboard = () => {
   
     try {
       console.log("Sending request to backend...");
-      const response = await axios.post("http://localhost:8080/api/job-seekers/register", formData, {
+      const response = await axios.post("http://localhost:9091/api/job-seeker/save", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
   
       if (response.status === 201) {
         console.log("Profile submitted successfully!");
         alert("Profile submitted successfully!");
-        navigate("/joblistingdashboard");
+        navigate("/JobListingDashboard");
       }
     } catch (error) {
       console.error("Failed to submit profile. Error:", error);
@@ -227,59 +227,106 @@ const JobSeekerDashboard = () => {
         <h2 className="mb-4">Create Your Profile</h2>
 
         {/* Personal Details (Always Visible) */}
-        {visibleSections.includes("personalDetails") && (
-          <div className="section">
-            <h4>Personal Details</h4>
+{visibleSections.includes("personalDetails") && (
+  <div className="section">
+    <h4>Personal Details</h4>
 
-            <div className="row-1 d-flex">
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-person"></i></span>
-                <input type="text" className="form-control" placeholder="Full Name" />
-              </div>
+    <div className="row-1 d-flex">
+      <div className="input-group">
+        <span className="input-group-text"><i className="bi bi-person"></i></span>
+        <input 
+          type="text" 
+          className="form-control" 
+          placeholder="Full Name"
+          value={fullName} 
+          onChange={(e) => setFullName(e.target.value)}
+          required 
+        />
+      </div>
 
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-telephone"></i></span>
-                <input type="text" className="form-control" placeholder="Mobile Number" />
-              </div>
-            </div>
+      <div className="input-group">
+        <span className="input-group-text"><i className="bi bi-telephone"></i></span>
+        <input 
+          type="text" 
+          className="form-control" 
+          placeholder="Mobile Number"
+          value={mobile} 
+          onChange={(e) => setMobile(e.target.value)}
+          required
+        />
+      </div>
+    </div>
 
-            <div className="row-2 d-flex">
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-envelope"></i></span>
-                <input type="email" className="form-control" placeholder="Email" />
-              </div>
+    <div className="row-2 d-flex">
+      <div className="input-group">
+        <span className="input-group-text"><i className="bi bi-envelope"></i></span>
+        <input 
+          type="email" 
+          className="form-control" 
+          placeholder="Email"
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
 
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-geo-alt"></i></span>
-                <input type="text" className="form-control" placeholder="Address" />
-              </div>
-            </div>
+      <div className="input-group">
+        <span className="input-group-text"><i className="bi bi-geo-alt"></i></span>
+        <input 
+          type="text" 
+          className="form-control" 
+          placeholder="Address"
+          value={address} 
+          onChange={(e) => setAddress(e.target.value)}
+          required
+        />
+      </div>
+    </div>
 
-            <div className="row-3 d-flex">
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-calendar"></i></span>
-                <input type="date" className="form-control" />
-              </div>
-            </div>
+    <div className="row-3 d-flex">
+      <div className="input-group">
+        <span className="input-group-text"><i className="bi bi-calendar"></i></span>
+        <input 
+          type="date" 
+          className="form-control"
+          value={dob} 
+          onChange={(e) => setDob(e.target.value)}
+          required
+        />
+      </div>
+    </div>
 
-            <div className="input-group">
-              <span className="input-group-text"><i className="bi bi-gender-ambiguous"></i></span>
-              <select className="form-control" defaultValue="Gender">
-                <option>Gender</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </select>
-            </div>
-        
-            <div className="row-4 d-flex">
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-geo-alt"></i></span>
-                <input type="text" className="form-control" placeholder="Location" />
-              </div>
-            </div>
-          </div>
-        )}
+    <div className="input-group">
+      <span className="input-group-text"><i className="bi bi-gender-ambiguous"></i></span>
+      <select 
+        className="form-control" 
+        value={gender} 
+        onChange={(e) => setGender(e.target.value)}
+        required
+      >
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div className="row-4 d-flex">
+      <div className="input-group">
+        <span className="input-group-text"><i className="bi bi-geo-alt"></i></span>
+        <input 
+          type="text" 
+          className="form-control" 
+          placeholder="Location"
+          value={address} // Assuming location is the same as address
+          onChange={(e) => setAddress(e.target.value)}
+          required
+        />
+      </div>
+    </div>
+  </div>
+)}
+
       
 
 
@@ -507,6 +554,7 @@ const JobSeekerDashboard = () => {
         <button 
           className="btn btn-success mt-4"
           onClick={handleSubmit}
+          
           // disabled={!isFormComplete}
           >Submit Profile
         </button>

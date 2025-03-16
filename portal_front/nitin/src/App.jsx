@@ -25,6 +25,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/job-seeker-dashboard" element={<JobSeekerDashboard />} />
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
+        
       </Routes>
       
     // </>
