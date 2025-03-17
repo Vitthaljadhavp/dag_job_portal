@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./JobSeekerDashboard.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import mainBannerImg from '../Assets/carousel-2.jpg';
+import { Carousel } from "react-bootstrap"; // ✅ Import Bootstrap Carousel
+import bannerImg1 from "../Assets/carousel-2.jpg";
+import bannerImg2 from "../Assets/carousel-1.jpg";
+import bannerImg3 from "../Assets/homebg1.jpg";
+
 import Footer from "../components/Footer";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
   const [visibleSections, setVisibleSections] = useState(["personalDetails"]);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Personal Details
   const [fullName, setFullName] = useState("");
@@ -160,21 +167,24 @@ const removeResume = () => {
   
   
 
-  const handleLogout = () => {
-
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    
-    if (confirmLogout) {
-    
-    localStorage.removeItem("authToken"); // If using JWT
-    
-    sessionStorage.clear(); // If using session storage
-    
-    navigate("/login");
-    
-    }
-    
+  // Detect scrolling for navbar transparency effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Handle Logout with Confirmation
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      localStorage.removeItem("authToken"); // Clear JWT
+      sessionStorage.clear(); // Clear session storage
+      setTimeout(() => navigate("/login"), 500); // Smooth logout transition
+    }
+  };
 
   const toggleSection = (section) => {
 
@@ -190,22 +200,63 @@ const removeResume = () => {
 
     <div className="header">
 
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="navbar-left">
-          <div className="navbar-logo">
-            <img src="/logo.png" alt="Logo" className="logo-img" />
-            <span className="portal-name">DAG Job Portal</span>
+<nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
+      {/* Left Side: Logo and Portal Name */}
+      <div className="navbar-left">
+        <div className="navbar-logo">
+          <img src="/logo.png" alt="Logo" className="logo-img" />
+          <span className="portal-name">DAG Job Portal</span>
+        </div>
+      </div>
+
+      {/* Right Side: Logout Button */}
+      <div className="navbar-right">
+        <button className="logout-button btn" onClick={handleLogout}>
+          Logout <i className="bi bi-box-arrow-right me-2"></i>
+        </button>
+      </div>
+    </nav>
+
+
+      {/* Banner Section
+      <div className="banner-container">
+        <img src={mainBannerImg} className="banner" alt="Job Seeker Dashboard Banner" />
+        <div className="banner-content">
+          <h3 className="text-uppercase rawColorTheme">Build Your Future</h3>
+          <h1 className="text-white">Find the Right Job That Suits Your Passion</h1>
+          <p>Upload your resume and showcase your skills to top recruiters.</p>
+          <div className="banner-buttons">
+            <button className="btn btn-success" onClick={() => toggleSection("uploadResume")}>Upload Resume</button>
+            <button className="btn btn-outline-light" onClick={() => toggleSection("education")}>Fill Profile</button>
           </div>
         </div>
+      </div> */}
 
-        {/* Logout Button on Right */}
-        <div className="navbar-right">
-          <button className="logout-button btn btn-danger" onClick={handleLogout}>Logout
-            <i className="bi bi-box-arrow-right me-2"></i> 
-          </button>
-        </div>
-      </nav>
+      {/* Banner Carousel (Bootstrap) */}
+      <div className="banner-section">
+  <Carousel>
+    <Carousel.Item>
+      <img className="d-block w-100" style={{height:"500px", width: "100%" , objectFit:"cover"}} src={bannerImg1} alt="First slide" />
+    </Carousel.Item>
+    <Carousel.Item>
+      <img className="d-block w-100" style={{height:"500px", width: "100%" , objectFit:"cover"}} src={bannerImg2} alt="Second slide" />
+    </Carousel.Item>
+    <Carousel.Item>
+      <img className="d-block w-100" style={{height:"500px", width: "100%" , objectFit:"cover"}} src={bannerImg3} alt="Third slide" />
+    </Carousel.Item>
+  </Carousel>
+
+  {/* Banner Content */}
+  <div className="banner-content">
+    <h1>Welcome to DAG Job Portal</h1>
+    <p>Your gateway to exciting job opportunities and career growth.</p>
+    <div className="banner-buttons">
+      <button className="btn btn-success me-2">Explore Jobs</button>
+      <button className="btn btn-outline-light">Upload Resume</button>
+    </div>
+  </div>
+</div>
+
 
 
     <div className="job-seeker-dashboard d-flex">
