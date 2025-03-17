@@ -71,6 +71,22 @@ const JobSeekerDashboard = () => {
       setProfilePic(null);
       
       };
+
+  // upload resume
+
+  const [resume, setResume] = useState(null);
+
+const handleResumeUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    setResume(file);
+  }
+};
+
+const removeResume = () => {
+  setResume(null);
+};
+
       
 
   // About Me
@@ -87,71 +103,51 @@ const JobSeekerDashboard = () => {
   };
 
 
-  // Form Submission
   const handleSubmit = async () => {
     console.log("Submitting profile...");
   
-    console.log("Full Name:", fullName);
-    console.log("Mobile:", mobile);
-    console.log("Email:", email);
-    console.log("Address:", address);
-    console.log("DOB:", dob);
-    console.log("Gender:", gender);
-    console.log("Skills:", skills);
-    console.log("Experiences:", experiences);
-    console.log("About Me:", aboutMe);
-    console.log("Profile Pic:", profilePic);
-  
-    if (!fullName || !mobile || !email || !address || !dob || !gender || !skills.length || !experiences.length || !aboutMe || !profilePic) {
+    if (!fullName || !mobile || !email || !address || !dob || !gender || !skills.length || !experiences.length || !aboutMe) {
       alert("Please fill in all required fields before submitting.");
       console.warn("Form validation failed! Missing fields detected.");
       return;
     }
   
     const formData = new FormData();
-    formData.append("fullName", fullName);
-    formData.append("mobile", mobile);
-    formData.append("email", email);
-    formData.append("address", address);
-    formData.append("dob", dob);
-    formData.append("gender", gender);
-    formData.append("aboutMe", aboutMe);
-    formData.append("profilePic", profilePic);
   
-    console.log("Adding education details...");
-    educationList.forEach((edu, index) => {
-      console.log(`Education ${index}:`, edu);
-      formData.append(`educationList[${index}].university`, edu.university);
-      formData.append(`educationList[${index}].degree`, edu.degree);
-      formData.append(`educationList[${index}].branch`, edu.branch);
-      formData.append(`educationList[${index}].percentage`, edu.percentage);
-      formData.append(`educationList[${index}].passingYear`, edu.passingYear);
-    });
+    // Construct the JobSeekerProfile object
+    const jobSeekerProfile = {
+      fullName,
+      mobile,
+      email,
+      address,
+      dateOfBirth: dob,
+      gender,
+      aboutMe,
+      educationList,
+      skills,
+      experiences,
+    };
   
-    console.log("Adding skills...");
-    skills.forEach((skill, index) => {
-      console.log(`Skill ${index}:`, skill);
-      formData.append(`skills[${index}]`, skill);
-    });
+    // Append profile as a JSON blob
+    formData.append(
+      "profile",
+      new Blob([JSON.stringify(jobSeekerProfile)], { type: "application/json" })
+    );
   
-    console.log("Adding experience details...");
-    experiences.forEach((exp, index) => {
-      console.log(`Experience ${index}:`, exp);
-      formData.append(`experiences[${index}].company`, exp.company);
-      formData.append(`experiences[${index}].role`, exp.role);
-      formData.append(`experiences[${index}].startDate`, exp.startDate);
-      formData.append(`experiences[${index}].endDate`, exp.endDate);
-      formData.append(`experiences[${index}].jobType`, exp.jobType);
-      formData.append(`experiences[${index}].mode`, exp.mode);
-    });
+    // Append profile picture if available
+    if (profilePic) {
+      formData.append("profilePicture", profilePic);
+      formData.append("resume", resume);  // ✅ Attach resume file
+    }
   
     try {
       console.log("Sending request to backend...");
       const response = await axios.post("http://localhost:9091/api/job-seeker/save", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
       });
   
-      if (response.status === 201) {
+      if (response.status === 200) {
         console.log("Profile submitted successfully!");
         alert("Profile submitted successfully!");
         navigate("/JobListingDashboard");
@@ -161,6 +157,7 @@ const JobSeekerDashboard = () => {
       alert("Failed to submit profile. Please try again.");
     }
   };
+  
   
 
   const handleLogout = () => {
@@ -213,14 +210,16 @@ const JobSeekerDashboard = () => {
 
     <div className="job-seeker-dashboard d-flex">
       {/* Sidebar */}
-      <div className="sidebar d-flex flex-column p-3 text-white">
-      <h3 className="mb-4">Fill the Form</h3>
-        <button className="btn btn-primary" onClick={() => toggleSection("education")}>Education</button>
-        <button className="btn btn-primary" onClick={() => toggleSection("skills")}>Skills</button>
-        <button className="btn btn-primary" onClick={() => toggleSection("experience")}>Experience</button>
-        <button className="btn btn-primary" onClick={() => toggleSection("uploadPic")}>Upload Profile Picture</button>
-        <button className="btn btn-primary" onClick={() => toggleSection("aboutMe")}>About Me</button>
-      </div>
+<div className="sidebar d-flex flex-column p-3 text-white">
+  <h3 className="mb-4">Fill the Form</h3>
+  <button className="btn btn-primary" onClick={() => toggleSection("education")}>Education</button>
+  <button className="btn btn-primary" onClick={() => toggleSection("skills")}>Skills</button>
+  <button className="btn btn-primary" onClick={() => toggleSection("experience")}>Experience</button>
+  <button className="btn btn-primary" onClick={() => toggleSection("uploadPic")}>Upload Profile Picture</button>
+  <button className="btn btn-primary" onClick={() => toggleSection("uploadResume")}>Upload Resume</button> {/* ✅ Added button */}
+  <button className="btn btn-primary" onClick={() => toggleSection("aboutMe")}>About Me</button>
+</div>
+
 
       {/* Main Content */}
       <div className="content p-4 w-100 ">
@@ -519,6 +518,36 @@ const JobSeekerDashboard = () => {
             )}
           </div>
         )}
+
+        {/* Upload Resume */}
+{visibleSections.includes("uploadResume") && (
+  <div className="section text-center">
+    <h4>Upload Resume</h4>
+
+    {/* Resume Preview (if available) */}
+    {resume && (
+      <div className="mb-3">
+        <p><strong>Uploaded File:</strong> {resume.name}</p>
+      </div>
+    )}
+
+    {/* File Input with Icon */}
+    <div className="input-group w-50 mx-auto">
+      <span className="input-group-text">
+        <i className="bi bi-file-earmark-text"></i>
+      </span>
+      <input type="file" className="form-control" accept=".pdf,.doc,.docx" onChange={handleResumeUpload} />
+    </div>
+
+    {/* Remove Resume Button */}
+    {resume && (
+      <button className="btn btn-danger mt-2" onClick={removeResume}>
+        <i className="bi bi-trash"></i> Remove Resume
+      </button>
+    )}
+  </div>
+)}
+
 
 
         {/* About Me Section */}
