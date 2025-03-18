@@ -15,6 +15,12 @@ const JobSeekerDashboard = () => {
   const navigate = useNavigate();
   const [visibleSections, setVisibleSections] = useState(["personalDetails"]);
   const [isScrolled, setIsScrolled] = useState(false);
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    alert("User ID not found. Please log in again.");
+    navigate("/login");
+  }
 
   // Personal Details
   const [fullName, setFullName] = useState("");
@@ -121,7 +127,6 @@ const removeResume = () => {
   
     const formData = new FormData();
   
-    // Construct the JobSeekerProfile object
     const jobSeekerProfile = {
       fullName,
       mobile,
@@ -135,36 +140,59 @@ const removeResume = () => {
       experiences,
     };
   
-    // Append profile as a JSON blob
     formData.append(
       "profile",
       new Blob([JSON.stringify(jobSeekerProfile)], { type: "application/json" })
     );
   
-    // Append profile picture if available
     if (profilePic) {
       formData.append("profilePicture", profilePic);
-      formData.append("resume", resume);  // ✅ Attach resume file
+      formData.append("resume", resume);
     }
   
-    try {
-      console.log("Sending request to backend...");
-      const response = await axios.post("http://localhost:9091/api/job-seeker/save", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
+    const token = localStorage.getItem("token"); // ✅ Get token from storage
+    const userId = localStorage.getItem("userId"); // ✅ Get userId
   
-      if (response.status === 200) {
-        console.log("Profile submitted successfully!");
+    try {
+      const saveProfileResponse = await axios.post(
+        "http://localhost:9091/api/job-seeker/save",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // ✅ Attach token
+          },
+          withCredentials: true,
+        }
+      );
+  
+      if (saveProfileResponse.status === 200) {
+        await axios.put(
+          `http://localhost:9091/api/users/update-profile-status/${userId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // ✅ Attach token
+            },
+            withCredentials: true,
+          }
+        );
+  
+        localStorage.setItem("isProfileComplete", "true");
         alert("Profile submitted successfully!");
         navigate("/JobListingDashboard");
+      } else {
+        throw new Error("Failed to save profile");
       }
     } catch (error) {
-      console.error("Failed to submit profile. Error:", error);
+      console.error("Failed to submit profile.", error);
       alert("Failed to submit profile. Please try again.");
     }
   };
   
+  
+  
+
   
 
   // Detect scrolling for navbar transparency effect

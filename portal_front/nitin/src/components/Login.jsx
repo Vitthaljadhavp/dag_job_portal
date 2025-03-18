@@ -14,19 +14,30 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const response = await axios.post("http://localhost:9091/api/users/login", { email, password });
-      const role = response.data.role?.trim().toLowerCase();
-      console.log("User Role:", role);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", role);
-      alert("Login Successful!");
+    
+      console.log("API Response:", response.data); // Check what data is returned
+    
+      const { token, role, isProfileComplete, userId } = response.data; // Ensure userId is extracted
+      
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role?.trim().toLowerCase());
+      localStorage.setItem("userId", userId); // Store userId
+      localStorage.setItem("isProfileComplete", isProfileComplete);
+    
+      console.log("UserId after login:", userId); // Debugging
+    
       setTimeout(() => {
         if (role === "admin") {
           navigate("/admin-dashboard");
         } else if (role === "job_seeker") {
-          navigate("/job-seeker-dashboard");
+          if (isProfileComplete) {
+            navigate("/JobListingDashboard"); 
+          } else {
+            navigate("/job-seeker-dashboard");
+          }
         } else if (role === "recruiter") {
           navigate("/recruiter-dashboard");
         } else {
@@ -34,9 +45,12 @@ function Login() {
         }
       }, 500);
     } catch (err) {
+      console.error("Login Error:", err);
       setError("Invalid email or password");
     }
+    
   };
+  
 
   
 
