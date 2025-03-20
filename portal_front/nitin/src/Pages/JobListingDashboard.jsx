@@ -85,15 +85,7 @@ const JobListingDashboard = () => {
         </div>
       </div>
 
-      {/* Right Side: Logout Button
-      <div className="navbar-right">
-        <button className="logout-button btn" onClick={handleLogout}>
-          Logout <i className="bi bi-box-arrow-right me-2"></i>
-        </button>
-      </div> */}
-
-
-<Dropdown>
+        <Dropdown>
           <Dropdown.Toggle variant="light" id="profile-dropdown">
             <img
               src={userProfile?.profilePic || "/default-profile.png"}
@@ -206,98 +198,102 @@ const JobListingDashboard = () => {
       </div>
     </div>
 
-      Popular Search Section
-      <div className="popular-search-section mt-5 ">
-        <h3 className="text-center">Popular Search</h3>
-        <div className="d-flex justify-content-center gap-4 mt-3">
-          {/* Job Listings */}
-      <div className="job-list mt-4 d-flex">
-        {jobs.length > 0 ? (
-          jobs.map((job) => (
-            <Card key={job.id} className="job-card">
-              <Card.Body>
-                {/* Save Job Icon */}
-                <div className="save-icon" onClick={() => toggleSaveJob(job.id)}>
-                  {savedJobs.has(job.id) ? <FaHeart color="red" /> : <FaRegHeart />}
-                </div>
+      {/* Popular Search Section */}
+<div className="popular-search-section mt-5">
+  <h3 className="text-center">Popular Search</h3>
+  <div className="d-flex justify-content-center gap-4 m-5">
+    {/* Job Listings */}
+    <div className="job-list mt-4">
+      {jobs.length > 0 ? (
+        <div className="row">
+          {jobs.map((job) => (
+            <div key={job.id} className="col-md-4 mb-4"> {/* 3 columns per row */}
+              <Card className="job-card">
+                <Card.Body>
+                  {/* Save Job Icon */}
+                  <div className="save-icon" onClick={() => toggleSaveJob(job.id)}>
+                    {savedJobs.has(job.id) ? <FaHeart color="red" /> : <FaRegHeart />}
+                  </div>
 
-                <h5 className="job-title">{job.title}</h5>
-                <p className="job-company">{job.companyName}</p>
-                <p className="job-location">📍 {job.location}</p>
-                
-                {/* Job Type, Mode & Status */}
-                <p className="job-info">
-                  <strong>Type:</strong> {job.jobType} | 
-                  <strong> Mode:</strong> {job.jobMode} |
-                  <strong> Status:</strong> {job.status}
-                </p>
+                  <h5 className="job-title">{job.title}</h5>
+                  <p className="job-company">{job.companyName}</p>
+                  <p className="job-location">📍 {job.location}</p>
 
-                {/* Salary */}
-                <p className="job-salary">💰 Salary: {job.salary || "Not Disclosed"}</p>
+                  {/* Job Type, Mode & Status */}
+                  <p className="job-info">
+                    <strong>Type:</strong> {job.jobType} | 
+                    <strong> Mode:</strong> {job.jobMode} |
+                    <strong> Status:</strong> {job.status}
+                  </p>
 
-                {/* Skills Required */}
-                <p className="job-skills">
-                  <strong>Skills:</strong> {job.skills ? job.skills.join(", ") : "N/A"}
-                </p>
+                  {/* Salary */}
+                  <p className="job-salary">💰 Salary: {job.salary || "Not Disclosed"}</p>
 
-                {/* Posting Days Calculation */}
-                <p className="job-posted">
-                  🕒 Posted {moment(job.postedDate).fromNow()}
-                </p>
+                  {/* Skills Required */}
+                  <p className="job-skills">
+                    <strong>Skills:</strong> {job.skills ? job.skills.join(", ") : "N/A"}
+                  </p>
 
-                <p className="job-description">{job.description.slice(0, 100)}...</p>
-                <Button variant="primary">Apply Now</Button>
-              </Card.Body>
-            </Card>
-          ))
-        ) : 
-        // (
-        //   <p>No job postings available.</p>
-        // )}
+                  {/* Posting Days Calculation */}
+                  <p className="job-posted">
+                    🕒 Posted {moment(job.postedDate).fromNow()}
+                  </p>
 
-        (
-          // Dummy Job Listings when no jobs are available
-          [...Array(5)].map((_, index) => (
-            <Card key={index} className="job-card">
-              <Card.Body>
-                {/* Save Job Icon */}
-                <div className="save-icon">
-                  <FaRegHeart />
-                </div>
-  
-                <h5 className="job-title">Software Developer</h5>
-                <p className="job-company">Tech Corp</p>
-                <p className="job-location">📍 New York, USA</p>
-  
-                {/* Job Type, Mode & Status */}
-                <p className="job-info">
-                  <strong>Type:</strong> Full-Time | 
-                  <strong> Mode:</strong> Remote |
-                  <strong> Status:</strong> Open
-                </p>
-  
-                {/* Salary */}
-                <p className="job-salary">💰 Salary: $80,000 - $100,000</p>
-  
-                {/* Skills Required */}
-                <p className="job-skills">
-                  <strong>Skills:</strong> JavaScript, React, Node.js
-                </p>
-  
-                {/* Posting Days Calculation */}
-                <p className="job-posted">
-                  🕒 Posted 3 days ago
-                </p>
-  
-                <p className="job-description">Exciting opportunity for a Software Developer to join our growing team...</p>
-                <Button variant="primary">Apply Now</Button>
-              </Card.Body>
-            </Card>
-          ))
-        )}
-      </div>
+                  <p className="job-description">{job.description.slice(0, 100)}...</p>
+                  <Button variant="primary">Apply Now</Button>
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        // Dummy Job Listings when no jobs are available
+        <div className="row">
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="col-md-4 mb-4"> {/* 3 columns per row */}
+              <Card className="job-card">
+                <Card.Body>
+                  {/* Save Job Icon */}
+                  <div className="save-icon">
+                    <FaRegHeart />
+                  </div>
+
+                  <h5 className="job-title">Software Developer</h5>
+                  <p className="job-company">Tech Corp</p>
+                  <p className="job-location">📍 New York, USA</p>
+
+                  {/* Job Type, Mode & Status */}
+                  <p className="job-info">
+                    <strong>Type:</strong> Full-Time | 
+                    <strong> Mode:</strong> Remote |
+                    <strong> Status:</strong> Open
+                  </p>
+
+                  {/* Salary */}
+                  <p className="job-salary">💰 Salary: $80,000 - $100,000</p>
+
+                  {/* Skills Required */}
+                  <p className="job-skills">
+                    <strong>Skills:</strong> JavaScript, React, Node.js
+                  </p>
+
+                  {/* Posting Days Calculation */}
+                  <p className="job-posted">
+                    🕒 Posted 3 days ago
+                  </p>
+
+                  <p className="job-description">Exciting opportunity for a Software Developer to join our growing team...</p>
+                  <Button variant="primary">Apply Now</Button>
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
 
       <Modal show={showEnquiry} onHide={() => setShowEnquiry(false)}>
         <Modal.Header closeButton>
