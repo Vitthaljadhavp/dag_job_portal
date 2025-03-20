@@ -3,6 +3,8 @@ import { Dropdown, Modal, Button, Card } from "react-bootstrap";
 import axios from "axios";
 import { FaHeart, FaRegHeart } from "react-icons/fa"; // Import save job icons
 import moment from "moment"; // For calculating posting days
+import {  InputGroup } from "react-bootstrap";
+import { FaMapMarkerAlt, FaBriefcase, FaSearch } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./JobListingDashboard.css";
 import { Form } from "react-bootstrap";
@@ -102,7 +104,7 @@ const JobListingDashboard = () => {
             />
           </Dropdown.Toggle>
           <Dropdown.Menu align="end">
-            <Dropdown.Item href="/profile">My Profile</Dropdown.Item>
+            <Dropdown.Item href="/job-seeker-dashboard">My Profile</Dropdown.Item>
             <Dropdown.Item href="/applied-jobs">Applied Jobs</Dropdown.Item>
             <Dropdown.Item href="/saved-jobs">Saved Jobs</Dropdown.Item>
             <Dropdown.Divider />
@@ -137,22 +139,72 @@ const JobListingDashboard = () => {
           <h1>Welcome to DAG Job Portal</h1>
           <p>Your gateway to exciting job opportunities and career growth.</p>
           <div className="banner-buttons">
-            <button className="btn btn-success me-2">Explore Jobs</button>
-            <button className="btn btn-outline-light">Upload Resume</button>
+            <button className="btn btn-success me-2" >Explore Jobs</button>
+            <button className="btn btn-outline-light" onClick={() => navigate("/job-seeker-dashboard")}>
+      Upload Resume
+    </button>
           </div>
         </div>
       </div>
 
-      {/* Hero Section */}
-      <div className="hero-section text-center py-5 p-5">
-        <h1>Find your dream job here</h1>
-        <p>A thoughtful combination of design and function to support your career growth.</p>
-        <div className="search-bar d-flex justify-content-center gap-3 mt-3">
-          <Form.Control type="text" placeholder="Location" className="search-input" />
-          <Form.Control type="text" placeholder="Job Type" className="search-input" />
-          <Button variant="success">Search</Button>
+
+        {/* Hero Section */}
+        <div className="hero-section text-center py-5 px-5" >
+      <h1>Find Your Dream Job Here</h1>
+      <p>A thoughtful combination of design and function to support your career growth.</p>
+
+      {/* Search Filters */}
+      <div className="container mt-4" style={{border: "1px dotted black", marginTop:"5px"}}>
+        <div className="row justify-content-center align-items-center g-2">
+          
+          {/* Job Title Input */}
+          <div className="col-md-3">
+            <InputGroup className="search-input">
+              <InputGroup.Text>
+                <FaSearch />
+              </InputGroup.Text>
+              <Form.Control type="text" placeholder="Job Title (e.g. Software Engineer)" />
+            </InputGroup>
+          </div>
+
+          {/* Location Input */}
+          <div className="col-md-3">
+            <InputGroup className="search-input">
+              <InputGroup.Text>
+                <FaMapMarkerAlt />
+              </InputGroup.Text>
+              <Form.Control type="text" placeholder="Enter Location" />
+            </InputGroup>
+          </div>
+
+          {/* Job Type Dropdown */}
+          <div className="col-md-3">
+            <InputGroup className="search-input">
+              <InputGroup.Text>
+                <FaBriefcase />
+              </InputGroup.Text>
+              <Dropdown>
+                <Dropdown.Toggle variant="light" id="jobTypeDropdown" style={{marginBottom:"15px", border:"0.01px solid black"}}>
+                  Select Job Type
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#">Full-time</Dropdown.Item>
+                  <Dropdown.Item href="#">Part-time</Dropdown.Item>
+                  <Dropdown.Item href="#">Internship</Dropdown.Item>
+                  <Dropdown.Item href="#">Remote</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </InputGroup>
+          </div>
+
+          {/* Search Button */}
+          <div className="col-md-2">
+            <Button variant="success" className="w-100">Search</Button>
+          </div>
+
         </div>
       </div>
+    </div>
 
       {/* Popular Search Section */}
       <div className="popular-search-section mt-5 ">

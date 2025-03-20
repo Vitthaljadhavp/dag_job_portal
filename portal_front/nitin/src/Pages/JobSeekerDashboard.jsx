@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./JobSeekerDashboard.css";
 import { useNavigate } from "react-router-dom";
@@ -8,14 +8,22 @@ import { Carousel } from "react-bootstrap"; // ✅ Import Bootstrap Carousel
 import bannerImg1 from "../Assets/carousel-2.jpg";
 import bannerImg2 from "../Assets/carousel-1.jpg";
 import bannerImg3 from "../Assets/homebg1.jpg";
-
+import { FaGraduationCap, FaTools, FaBriefcase, FaUserCircle, FaFileUpload, FaUser } from "react-icons/fa";
 import Footer from "../components/Footer";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
+  const secondButtonRef = useRef(null);
   const [visibleSections, setVisibleSections] = useState(["personalDetails"]);
   const [isScrolled, setIsScrolled] = useState(false);
   const userId = localStorage.getItem("userId");
+
+
+  const scrollToSecondButton = () => {
+    if (secondButtonRef.current) {
+      secondButtonRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
   if (!userId) {
     alert("User ID not found. Please log in again.");
@@ -279,8 +287,10 @@ const removeResume = () => {
     <h1>Welcome to DAG Job Portal</h1>
     <p>Your gateway to exciting job opportunities and career growth.</p>
     <div className="banner-buttons">
-      <button className="btn btn-success me-2">Explore Jobs</button>
-      <button className="btn btn-outline-light">Upload Resume</button>
+      <button className="btn btn-success me-2" onClick={() => navigate("/JobListingDashboard")}>Explore Jobs</button>
+      <button className="btn btn-outline-light" onClick={scrollToSecondButton}>
+        Upload Resume
+      </button>
     </div>
   </div>
 </div>
@@ -291,12 +301,29 @@ const removeResume = () => {
       {/* Sidebar */}
 <div className="sidebar d-flex flex-column p-3 text-white">
   <h3 className="mb-4">Fill the Form</h3>
-  <button className="btn btn-primary" onClick={() => toggleSection("education")}>Education</button>
-  <button className="btn btn-primary" onClick={() => toggleSection("skills")}>Skills</button>
-  <button className="btn btn-primary" onClick={() => toggleSection("experience")}>Experience</button>
-  <button className="btn btn-primary" onClick={() => toggleSection("uploadPic")}>Upload Profile Picture</button>
-  <button className="btn btn-primary" onClick={() => toggleSection("uploadResume")}>Upload Resume</button> {/* ✅ Added button */}
-  <button className="btn btn-primary" onClick={() => toggleSection("aboutMe")}>About Me</button>
+  <button className="btn btn-primary" onClick={() => toggleSection("education")}>
+  <FaGraduationCap className="me-2"  /> Education
+</button>
+
+<button className="btn btn-primary" onClick={() => toggleSection("skills")}>
+  <FaTools className="me-2" /> Skills
+</button>
+
+<button className="btn btn-primary" onClick={() => toggleSection("experience")}>
+  <FaBriefcase className="me-2" /> Experience
+</button>
+
+<button className="btn btn-primary" onClick={() => toggleSection("uploadPic")}>
+  <FaUserCircle className="me-2" /> Upload Profile Picture
+</button>
+
+<button className="btn btn-primary" onClick={() => toggleSection("uploadResume")}>
+  <FaFileUpload className="me-2" /> Upload Resume
+</button>
+
+<button className="btn btn-primary" onClick={() => toggleSection("aboutMe")}>
+  <FaUser className="me-2" /> About Me
+</button>
 </div>
 
 
@@ -306,7 +333,7 @@ const removeResume = () => {
 
         {/* Personal Details (Always Visible) */}
 {visibleSections.includes("personalDetails") && (
-  <div className="section">
+  <div className="section" style={{border:"2px dashed black"}}>
     <h4>Personal Details</h4>
 
     <div className="row-1 d-flex">
@@ -361,6 +388,7 @@ const removeResume = () => {
       </div>
     </div>
 
+    <div>
     <div className="row-3 d-flex">
       <div className="input-group">
         <span className="input-group-text"><i className="bi bi-calendar"></i></span>
@@ -388,6 +416,7 @@ const removeResume = () => {
         <option value="Other">Other</option>
       </select>
     </div>
+    </div>
 
     <div className="row-4 d-flex">
       <div className="input-group">
@@ -395,7 +424,7 @@ const removeResume = () => {
         <input 
           type="text" 
           className="form-control" 
-          placeholder="Location"
+          placeholder="Current Location"
           value={address} // Assuming location is the same as address
           onChange={(e) => setAddress(e.target.value)}
           required
@@ -405,13 +434,14 @@ const removeResume = () => {
   </div>
 )}
 
-      
+<div className="WholeEducation" style={{textAlign:"justify"}}   >
+<button className="btn1 btn-success mt-2 mb-3" onClick={() => toggleSection("education")}> <FaGraduationCap className="me-2" />Education</button>
 
 
 
         {/* Education Section */}
         {visibleSections.includes("education") && (
-          <div className="section">
+          <div className="section" style={{border:"1px dashed black"}}>
             <h4>Education</h4>
 
             {educationList.map((education, index) => (
@@ -460,17 +490,23 @@ const removeResume = () => {
             ))}
 
             {/* Add Education Button */}
-            <button className="btn btn-success mt-2" onClick={addEducation}>
-              <i className="bi bi-plus-circle"></i> Add Education
+            <button className="btn btn-success mt-2"  onClick={addEducation}>
+              <i className="bi bi-plus-circle" style={{textAlign:"center"}}></i> Add Education
             </button>
           </div>
         )}
+
+</div>
+
+<div className="WholeEducation" style={{textAlign:"left"}}>
+<button className="btn1 btn-success mt-2 mb-3" onClick={() => toggleSection("skills")}> <FaTools className="me-2" />Skills</button>
+
 
 
 
         {/* Skills Section */}
         {visibleSections.includes("skills") && (
-          <div className="section w-100">
+          <div className="section w-100" style={{border:"1px dashed black"}}>
             <h4>Skills</h4>
     
             <div className="input-group">
@@ -495,11 +531,16 @@ const removeResume = () => {
             </div>
           </div>
         )}
+        </div>
+
+<div className="WholeEducation" style={{textAlign:"left"}}>
+<button className="btn1 btn-success mt-2 mb-3" onClick={() => toggleSection("experience")}> <FaBriefcase className="me-2" /> Experience</button>
+
 
 
         {/* Experience Section */}
         {visibleSections.includes("experience") && (
-          <div className="section">
+          <div className="section" style={{border:"1px dashed black"}}>
             <h4>Experience</h4>
 
             {experiences.map((exp, index) => (
@@ -567,11 +608,16 @@ const removeResume = () => {
             </button>
           </div>
         )}
+        </div>
+
+
+<div className="WholeEducation" style={{textAlign:"left"}}>
+<button className="btn1 btn-success mt-2 mb-3" onClick={() => toggleSection("uploadPic")}> <FaUserCircle className="me-2" />Upload Profile Picture</button>
 
 
         {/* Upload Profile Picture */}
         {visibleSections.includes("uploadPic") && (
-          <div className="section text-center">
+          <div className="section text-center" style={{border:"1px dashed black"}}>
             <h4>Upload Profile Picture</h4>
 
             {/* Profile Image Preview */}
@@ -597,10 +643,19 @@ const removeResume = () => {
             )}
           </div>
         )}
+        </div>
+
+
+<div className="WholeEducation" style={{textAlign:"left"}}>
+<button className="btn1 btn-success mt-2 mb-3" onClick={() => toggleSection("uploadResume")}
+        ref={secondButtonRef}> <FaFileUpload className="me-2" />Upload Resume</button>
+
+
+
 
         {/* Upload Resume */}
 {visibleSections.includes("uploadResume") && (
-  <div className="section text-center">
+  <div className="section text-center" style={{border:"1px dashed black"}}>
     <h4>Upload Resume</h4>
 
     {/* Resume Preview (if available) */}
@@ -626,12 +681,17 @@ const removeResume = () => {
     )}
   </div>
 )}
+</div>
+
+<div className="WholeEducation" style={{textAlign:"left"}}>
+<button className="btn1 btn-success mt-2 mb-3" onClick={() => toggleSection("aboutMe")}> <FaUser className="me-2" />About Me</button>
+
 
 
 
         {/* About Me Section */}
         {visibleSections.includes("aboutMe") && (
-          <div className="section">
+          <div className="section" style={{border:"1px dashed black"}}>
             <h4>About Me</h4>
 
             {/* Textarea with Icon */}
@@ -655,6 +715,10 @@ const removeResume = () => {
             </div>
           </div>
         )}
+        </div>
+
+
+
 
 
 
