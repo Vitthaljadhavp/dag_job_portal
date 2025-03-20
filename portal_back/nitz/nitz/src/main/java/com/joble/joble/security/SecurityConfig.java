@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,41 +37,55 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Added CORS
-            .csrf(csrf -> csrf.disable()) // ✅ Disable CSRF for APIs
-            .authorizeHttpRequests((auth) -> auth
+            .cors(Customizer.withDefaults()) // ✅ Explicitly allow CORS before security rules
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                // Public Endpoints
                 .requestMatchers("/api/users/register", "/api/users/login", "/api/users/forgot-password", "/api/users/reset-password").permitAll()
                 .requestMatchers("/oauth2/**", "/login/**", "/auth/user").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll()
+                
+                // Job Seeker Profile Endpoints (Authenticated Only)
+                .requestMatchers(HttpMethod.POST, "/api/job-seeker/**").authenticated() 
+                .requestMatchers(HttpMethod.PUT, "/api/job-seeker/**").authenticated() 
+                .requestMatchers(HttpMethod.PUT, "/api/users/update-profile-status/**").authenticated() // ✅ Ensured authentication
+                
+                // Public Job Listings
                 .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
+
+                // Employer Restricted Endpoints
                 .requestMatchers("/api/jobs/**").hasAnyAuthority("ROLE_EMPLOYER")
+
+                // Any other requests require authentication
                 .anyRequest().authenticated()
             )
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Enforce stateless sessions
+
             .oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorization"))
-                .redirectionEndpoint(endpoint -> endpoint.baseUri("/login/oauth2/code/*"))
+                .redirectionEndpoint(endpoint -> endpoint.baseUri("/login/oauth2/code/github"))
                 .defaultSuccessUrl("http://localhost:3000/dashboard", true)
             )
-            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+            
+            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Ensure JWT authentication
 
         return http.build();
     }
 
-    // ✅ CORS Configuration
+    // ✅ CORS Configuration to Allow Frontend Requests
     @Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOriginPatterns(List.of("*")); // Allow all origins (for development)
-    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-    configuration.setExposedHeaders(List.of("Authorization"));
-    configuration.setAllowCredentials(true);
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ Allow React frontend
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true); // ✅ Allow credentials (for cookies/sessions)
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-}
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

@@ -67,4 +67,10 @@ public class UserService {
         user.setTokenExpiry(null);
         userRepository.save(user);
     }
+
+    public void updateProfileCompletionStatus(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setProfileComplete(true);
+        userRepository.save(user);
+    }
 }

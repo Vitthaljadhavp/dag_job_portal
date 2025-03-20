@@ -19,6 +19,11 @@ public class JobService {
         return jobRepository.save(job);
     }
 
+    // Method to fetch all jobs
+    public List<Job> getAllJobs() {
+        return jobRepository.findAll();
+    }
+
     public List<Job> getJobsByEmployer(Long employerId) {
         return jobRepository.findByEmployerId(employerId);
     }
@@ -42,4 +47,6 @@ public class JobService {
     public void deleteJob(Long id) {
         jobRepository.deleteById(id);
     }
+
+    
 }

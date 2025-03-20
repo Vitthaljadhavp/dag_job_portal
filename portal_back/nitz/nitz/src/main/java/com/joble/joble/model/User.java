@@ -37,4 +37,7 @@ public class User {
     @Column(unique = true)
     private String resetToken;
     private Date tokenExpiry;
+
+    // New field for profile completion
+    private boolean isProfileComplete = false;
 }

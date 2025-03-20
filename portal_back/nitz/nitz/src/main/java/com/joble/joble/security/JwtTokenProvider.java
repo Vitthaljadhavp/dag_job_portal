@@ -31,11 +31,20 @@ public class JwtTokenProvider {
     }
 
     public String extractUsername(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+        if (token == null || token.trim().isEmpty()) {
+            throw new IllegalArgumentException("JWT Token is null or empty.");
+        }
+        
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JWT Token: " + e.getMessage());
+        }
     }
 }
+    

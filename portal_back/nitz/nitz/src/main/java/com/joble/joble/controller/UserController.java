@@ -15,8 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import jakarta.servlet.http.HttpServletRequest; // Import required package
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -53,25 +52,29 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        Optional<User> userOpt = userService.findUserByEmail(loginRequest.getEmail());
-        
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
+public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+    Optional<User> userOpt = userService.findUserByEmail(loginRequest.getEmail());
 
-        User user = userOpt.get();
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
-
-        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole());
-        UserResponse userResponse = new UserResponse(
-                user.getId(), user.getName(), user.getEmail(),
-                user.getMobileNo(), user.getWorkStatus(), user.getRole(), token
-        );
-        return ResponseEntity.ok(userResponse);
+    if (userOpt.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
     }
+
+    User user = userOpt.get();
+    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+    }
+
+    String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole());
+    boolean isProfileComplete = user.isProfileComplete();
+
+    return ResponseEntity.ok(Map.of(
+            "userId", user.getId(),  // Include userId in response
+            "token", token,
+            "role", user.getRole(),
+            "isProfileComplete", isProfileComplete
+    ));
+}
+
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email, HttpServletRequest request) {
@@ -84,10 +87,9 @@ public class UserController {
             String resetToken = UUID.randomUUID().toString();
             userService.saveResetToken(user, resetToken);
             
-            // Get the frontend URL dynamically
             String frontendUrl = request.getHeader("Origin");  
             if (frontendUrl == null || frontendUrl.isEmpty()) {
-                frontendUrl = "http://localhost";  // Default fallback
+                frontendUrl = "http://localhost";  
             }
             
             emailService.sendResetEmail(user.getEmail(), resetToken, frontendUrl);
@@ -115,4 +117,16 @@ public class UserController {
                     .body("Error resetting password: " + e.getMessage());
         }
     }
+
+    @PutMapping("/update-profile-status/{userId}")
+public ResponseEntity<?> updateProfileStatus(@PathVariable Long userId) {
+    try {
+        userService.updateProfileCompletionStatus(userId);
+        return ResponseEntity.ok("Profile updated successfully");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error updating profile: " + e.getMessage());
+    }
+}
+
 }

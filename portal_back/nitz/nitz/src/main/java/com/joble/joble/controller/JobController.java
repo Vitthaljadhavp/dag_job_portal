@@ -28,6 +28,12 @@ public class JobController {
         return ResponseEntity.ok(jobService.postJob(job));
     }
 
+    @GetMapping
+    public ResponseEntity<List<Job>> getAllJobs() {
+    return ResponseEntity.ok(jobService.getAllJobs());
+}
+
+
 
     @GetMapping("/employer/{employerId}")
     public ResponseEntity<List<Job>> getJobsByEmployer(@PathVariable Long employerId) {
