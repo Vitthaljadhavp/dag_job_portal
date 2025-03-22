@@ -54,8 +54,11 @@ public class SecurityConfig {
                 // Public Job Listings
                 .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
 
-                // Employer Restricted Endpoints
-                .requestMatchers("/api/jobs/**").hasAnyAuthority("ROLE_EMPLOYER")
+                // Restrict Job Posting to Employers Only
+                .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasAuthority("ROLE_EMPLOYER")
+                .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasAuthority("ROLE_EMPLOYER")
+                .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasAuthority("ROLE_EMPLOYER")
+
 
                 // Any other requests require authentication
                 .anyRequest().authenticated()

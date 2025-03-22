@@ -25,10 +25,12 @@ const JobSeekerDashboard = () => {
     }
   };
 
-  if (!userId) {
-    alert("User ID not found. Please log in again.");
-    navigate("/login");
-  }
+  useEffect(() => {
+    if (!userId) {
+      alert("User ID not found. Please log in again.");
+      navigate("/login");
+    }
+  }, [userId, navigate]);
 
   // Personal Details
   const [fullName, setFullName] = useState("");

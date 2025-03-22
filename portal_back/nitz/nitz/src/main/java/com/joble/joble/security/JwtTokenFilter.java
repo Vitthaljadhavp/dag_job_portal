@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.core.env.Environment;
 import java.io.IOException;
 import java.security.Key;
+import java.util.Base64;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -30,8 +30,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private Environment env; // Fetch secret key from application.properties
 
     private Key getSigningKey() {
-        String secretKey = env.getProperty("jwt.secret-key");
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        String secretKey = env.getProperty("jwt.secret"); // Ensure consistency
+        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+        return Keys.hmacShaKeyFor(decodedKey);
     }
 
     @Override

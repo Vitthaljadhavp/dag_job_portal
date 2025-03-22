@@ -6,6 +6,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import JobSeekerDashboard from "./Pages/JobSeekerDashboard";
 import RecruiterDashboard from "./Pages/RecruiterDashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import JobListingDashboard from "./Pages/JobListingDashboard";
