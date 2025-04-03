@@ -1,7 +1,5 @@
 package com.joble.joble.controller;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,41 +11,35 @@ import com.joble.joble.service.JobService;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/jobs")
-@CrossOrigin(origins = "http://localhost:3000") // Adjust if needed
+@CrossOrigin("http://localhost:3001")
 public class JobController {
 
     @Autowired
     private JobService jobService;
 
-    @PostMapping
-public ResponseEntity<Job> postJob(@RequestBody Job job, @RequestHeader("Authorization") String token) {
-    System.out.println("JWT Token Received: " + token); // Debugging line
-
-    if (token == null || !token.startsWith("Bearer ")) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    @PostMapping("/postJob")
+    public Job postJob(@Valid @RequestBody Job job) {
+        System.out.println("Received job data: " + job);
+        return jobService.postJob(job);
     }
 
-    if (job.getEmployer() == null || job.getEmployer().getId() == null) {
-        return ResponseEntity.badRequest().body(null);
-    }
-    
-    return ResponseEntity.ok(jobService.postJob(job));
-}
 
 
     @GetMapping
     public ResponseEntity<List<Job>> getAllJobs() {
     return ResponseEntity.ok(jobService.getAllJobs());
-}
-
-
-
-    @GetMapping("/employer/{employerId}")
-    public ResponseEntity<List<Job>> getJobsByEmployer(@PathVariable Long employerId) {
-        return ResponseEntity.ok(jobService.getJobsByEmployer(employerId));
     }
+
+
+
+    // @GetMapping("/employer/{employerId}")
+    // public ResponseEntity<List<Job>> getJobsByEmployer(@PathVariable Long employerId) {
+    //     return ResponseEntity.ok(jobService.getJobsByEmployer(employerId));
+    // }
 
     @GetMapping("/{id}")
     public ResponseEntity<Job> getJobById(@PathVariable Long id) {

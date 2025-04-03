@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
-    List<Job> findByEmployerId(Long employerId); // Get jobs by employer ID
     List<Job> findAll(); // Fetch all jobs
 }

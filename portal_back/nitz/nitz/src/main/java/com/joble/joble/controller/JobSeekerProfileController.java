@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/job-seeker")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+
 public class JobSeekerProfileController {
 
     private final JobSeekerProfileService profileService;

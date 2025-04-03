@@ -16,56 +16,64 @@ const RecruiterDashboard = () => {
   const [showEnquiry, setShowEnquiry] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
     const [isScrolled, setIsScrolled] = useState(false);
-  const [job, setJob] = useState({
-    title: "",
-    company: "",
-    location: "",
-    type: "Full-time",
-    mode: "On-site",
-    salary: "",
-    skills: "",
-    description: "",
-    deadline: "",
-    status: "Open",
-  });
-  const [jobs, setJobs] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-
-  const handleChange = (e) => {
-    setJob({ ...job, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const token = localStorage.getItem("authToken"); // Retrieve the JWT token
-    
-    if (!token) {
-      alert("You must be logged in to post a job.");
-      return;
-    }
+    const [jobs, setJobs] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedJob, setSelectedJob] = useState(null);
+    const [job, setJob] = useState({
+      title: "",
+      company: "",
+      location: "",
+      type: "",
+      mode: "",
+      salary: "",
+      skills: "",
+      description: "",
+      deadline: "",
+      status:""
+    });
   
-    try {
-      const response = await axios.post(
-        "http://localhost:9091/api/jobs",
-        job,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Send token in headers
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      
-      console.log("Job Posted:", response.data);
-      fetchJobs(); // Refresh job list
-      setShowModal(false); // Close modal after submission
-    } catch (error) {
-      console.error("Error posting job:", error);
-      alert("Failed to post job. Please try again.");
-    }
-  };
+    // Handle input change
+    const handleChange = (e) => {
+      setJob({
+        ...job,
+        [e.target.name]: e.target.value,
+      });
+    };
+  
+    // Handle form submission
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+    
+      const jobData = {
+        ...job,
+        salary: job.salary ? Number(job.salary) : 0, // Ensure salary is a number
+        type: job.type || "Not specified",
+        mode: job.mode || "Not specified",
+        status: job.status || "Open",
+        skills: job.skills ? job.skills.split(",").map(skill => skill.trim()) : [], // Convert skills to array
+      };
+    
+      console.log("Sending job data:", JSON.stringify(jobData, null, 2));
+    
+      try {
+        const response = await axios.post("http://localhost:9091/api/jobs/postJob", jobData, {
+          headers: { "Content-Type": "application/json" },
+        });
+    
+        console.log("Response from server:", response.data);
+        alert("Job posted successfully!");
+      } catch (error) {
+        console.error("Error posting job:", error.response?.data || error.message);
+        alert(`Failed to post job: ${error.response?.data?.message || error.message}`);
+      }
+    };
+    
+    
+    
+    
+
+
+
   
   
 
@@ -290,6 +298,15 @@ const RecruiterDashboard = () => {
                   <label className="form-label">Application Deadline</label>
                   <input type="date" className="form-control" name="deadline" value={job.deadline} onChange={handleChange} required />
                 </div>
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Job Status</label>
+                    <select className="form-control" name="status" value={job.status} onChange={handleChange}>
+                      <option>Open</option>
+                      <option>Close</option>
+                    </select>
+                  </div>
+                  </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   <button type="submit" className="btn btn-primary">Post Job</button>

@@ -24,9 +24,9 @@ public class JobService {
         return jobRepository.findAll();
     }
 
-    public List<Job> getJobsByEmployer(Long employerId) {
-        return jobRepository.findByEmployerId(employerId);
-    }
+    // public List<Job> getJobsByEmployer(Long employerId) {
+    //     return jobRepository.findByEmployerId(employerId);
+    // }
 
     public Optional<Job> getJobById(Long id) {
         return jobRepository.findById(id);
@@ -37,7 +37,6 @@ public class JobService {
             job.setTitle(updatedJob.getTitle());
             job.setCompany(updatedJob.getCompany());
             job.setLocation(updatedJob.getLocation());
-            job.setProfession(updatedJob.getProfession());
             job.setSalary(updatedJob.getSalary());
             job.setStatus(updatedJob.getStatus());
             return jobRepository.save(job);

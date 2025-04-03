@@ -55,9 +55,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
 
                 // Restrict Job Posting to Employers Only
-                .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasAuthority("ROLE_EMPLOYER")
-                .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasAuthority("ROLE_EMPLOYER")
-                .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasAuthority("ROLE_EMPLOYER")
+                .requestMatchers(HttpMethod.POST, "/api/jobs/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/jobs/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").permitAll()
 
 
                 // Any other requests require authentication
@@ -81,7 +81,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ Allow React frontend
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3001")); // ✅ Allow React frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));
