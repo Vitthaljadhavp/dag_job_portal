@@ -225,7 +225,7 @@ useEffect(() => {
           </Dropdown.Toggle>
           <Dropdown.Menu align="end">
             <Dropdown.Item href="/job-seeker-dashboard">My Profile</Dropdown.Item>
-            <Dropdown.Item href="/applied-jobs">Applied Jobs</Dropdown.Item>
+            <Dropdown.Item href="/application-insights">Applied Jobs</Dropdown.Item>
             <Dropdown.Item href="/saved-jobs">Saved Jobs</Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={() => setShowEnquiry(true)}>
