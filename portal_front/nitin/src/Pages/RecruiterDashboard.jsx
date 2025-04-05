@@ -98,12 +98,7 @@ const RecruiterDashboard = () => {
   const handleDelete = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        const token = localStorage.getItem("authToken");
-        await axios.delete(`http://localhost:9091/api/jobs/${jobId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.delete(`http://localhost:9091/api/jobs/${jobId}`);
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);
@@ -113,10 +108,8 @@ const RecruiterDashboard = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const token = localStorage.getItem("authToken");
       await axios.put(`http://localhost:9091/api/jobs/${selectedJob.id}`, selectedJob, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -131,10 +124,8 @@ const RecruiterDashboard = () => {
 
   const handleStatusChange = async (jobId, status) => {
     try {
-      const token = localStorage.getItem("authToken");
       await axios.put(`http://localhost:9091/api/jobs/${jobId}`, { status }, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -188,10 +179,8 @@ const RecruiterDashboard = () => {
         </Dropdown.Toggle>
         <Dropdown.Menu align="end">
           <Dropdown.Item href="/job-seeker-dashboard">My Profile</Dropdown.Item>
-          <Dropdown.Item onClick={() => navigate("/application-insights")}>
-            Applied Jobs
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => navigate("/saved-jobs")}>Saved Jobs</Dropdown.Item>
+          <Dropdown.Item onClick={() => navigate("/ApplicantionInsights")}> Applicantion Insights </Dropdown.Item>
+          <Dropdown.Item href="/saved-jobs">Saved Jobs</Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item onClick={() => setShowEnquiry(true)}>
             Enquiry/Help

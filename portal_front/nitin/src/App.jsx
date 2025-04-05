@@ -10,8 +10,10 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import JobListingDashboard from "./Pages/JobListingDashboard";
-import ApplicationInsights from "./Pages/ApplicationInsights";
 import Footer from "./components/Footer";
+import ApplicantionInsights from "./Pages/ApplicantionInsights";
+import AppliedJobs from "./Pages/AppliedJobs";
+
 
 
 
@@ -28,9 +30,10 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/job-seeker-dashboard" element={<JobSeekerDashboard />} />
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
-        <Route path="/JobListingDashboard" element={<JobListingDashboard />} />
-        <Route path="/application-insights" element={<ApplicationInsights />} />
-         {/* ✅ New Route */}
+        <Route path="/JobListingDashboard" element={<JobListingDashboard />} /> 
+        <Route path="/ApplicantionInsights" element={<ApplicantionInsights />} />
+        <Route path="/AppliedJobs" element={<AppliedJobs />} />
+        {/* ✅ New Route */}
       </Routes>
       
     // </>

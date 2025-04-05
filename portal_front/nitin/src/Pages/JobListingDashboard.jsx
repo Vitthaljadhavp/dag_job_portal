@@ -124,10 +124,10 @@ const filterJobs = () => {
   // 🔹 Function to Filter Jobs Dynamically
 useEffect(() => {
   const filtered = jobs.filter(job =>
-    job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-    job.location.toLowerCase().includes(searchLocation.toLowerCase()) &&
+    (job.title?.toLowerCase() || "").includes(searchTitle.toLowerCase()) &&
+    (job.location?.toLowerCase() || "").includes(searchLocation.toLowerCase()) &&
     (selectedJobType ? job.jobType === selectedJobType : true)
-  );
+  );  
   setFilteredJobs(filtered);
 }, [searchTitle, searchLocation, selectedJobType, jobs]); // Runs when any of these change
 
@@ -225,7 +225,7 @@ useEffect(() => {
           </Dropdown.Toggle>
           <Dropdown.Menu align="end">
             <Dropdown.Item href="/job-seeker-dashboard">My Profile</Dropdown.Item>
-            <Dropdown.Item href="/application-insights">Applied Jobs</Dropdown.Item>
+            <Dropdown.Item href="/AppliedJobs">Applied Jobs</Dropdown.Item>
             <Dropdown.Item href="/saved-jobs">Saved Jobs</Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={() => setShowEnquiry(true)}>
