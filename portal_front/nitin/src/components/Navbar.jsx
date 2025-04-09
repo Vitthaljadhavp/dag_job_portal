@@ -1,8 +1,19 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import './Navbar.css';
 import { FaBriefcase, FaBuilding, FaServicestack, FaUser, FaUserPlus, FaChevronDown } from 'react-icons/fa';
 
 function Navbar() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+      const confirmLogout = window.confirm("Are you sure you want to log out?");
+      if (confirmLogout) {
+        localStorage.removeItem("authToken"); // Clear JWT
+        sessionStorage.clear(); // Clear session storage
+        setTimeout(() => navigate("/login"), 500); // Smooth logout transition
+      }
+    };
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -27,12 +38,14 @@ function Navbar() {
           <div className="dropdown-content">
             <a href="#view">View Profile</a>
             <a href="#settings">Settings</a>
-            <a href="#logout">Logout</a>
+            <a href="/login" onClick={handleLogout}>Logout</a>
           </div>
         </div>
       </div>
     </nav>
+    
   );
 }
 
+    
 export default Navbar;

@@ -17,6 +17,8 @@ function ApplicationInsights() {
     <div className="navbar-logo">
       <img src="/logo.png" alt="Logo" className="logo-img" />
       <span className="portal-name">DAG Job Portal</span>
+
+      <h1>Hey its a Application Insight Dashboard</h1>
     </div>
   </div>
 

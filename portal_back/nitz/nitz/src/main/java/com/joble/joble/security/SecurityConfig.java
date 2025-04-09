@@ -53,11 +53,15 @@ public class SecurityConfig {
                 
                 // Public Job Listings
                 .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
-
-                // Restrict Job Posting to Employers Only
                 .requestMatchers(HttpMethod.POST, "/api/jobs/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/api/jobs/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").permitAll()
+
+                // Public Job Listings
+                .requestMatchers(HttpMethod.GET, "/api/applied-jobs/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/applied-jobs/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/applied-jobs/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/applied-jobs/**").permitAll()
 
 
                 // Any other requests require authentication

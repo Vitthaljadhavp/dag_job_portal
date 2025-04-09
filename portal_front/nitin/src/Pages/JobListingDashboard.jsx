@@ -20,8 +20,9 @@ const JobListingDashboard = () => {
     const [filteredJobs, setFilteredJobs] = useState([]); // Store filtered jobs
     const [savedJobs, setSavedJobs] = useState(new Set());
     const [showEnquiry, setShowEnquiry] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
-  const [isScrolled, setIsScrolled] = useState(false);
+    const [userProfile, setUserProfile] = useState(null);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [appliedJobs, setAppliedJobs] = useState(new Set()); // Track applied jobs
 
   
   // Dummy job listings
@@ -192,14 +193,34 @@ useEffect(() => {
     });
   };
 
-  // Detect scrolling for navbar transparency effect
-    useEffect(() => {
-      const handleScroll = () => {
-        setIsScrolled(window.scrollY > 50);
-      };
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+  // Handle job application
+  const handleApplyJob = async (jobId) => {
+    try {
+      // Get user ID from localStorage or userProfile
+      const userId = userProfile?.id || 1; // Fallback to 1 if userProfile not available
+      
+      // Make API call to apply for job
+      const response = await axios.post('http://localhost:9091/api/applied-jobs/apply', null, {
+        params: {
+          userId: userId,
+          jobId: jobId
+        }
+      });
+
+      if (response.status === 200) {
+        // Add job to applied jobs set
+        setAppliedJobs(prev => new Set([...prev, jobId]));
+        alert('Successfully applied for the job!');
+      }
+    } catch (error) {
+      if (error.response?.status === 400 && error.response?.data?.includes('already applied')) {
+        alert('You have already applied for this job!');
+      } else {
+        alert('Error applying for job. Please try again later.');
+        console.error('Error applying for job:', error);
+      }
+    }
+  };
 
   return (
     <div className="dashboard-container ">
@@ -360,7 +381,16 @@ useEffect(() => {
                       </p>
                       <p className="job-posted">🕒 Posted {moment(job.postedDate).fromNow()}</p>
                       <p className="job-description">{job.description.slice(0, 100)}...</p>
-                      <Button variant="primary">Apply Now</Button>
+                      <Button 
+                        variant="primary" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleApplyJob(job.id);
+                        }}
+                        disabled={appliedJobs.has(job.id)}
+                      >
+                        {appliedJobs.has(job.id) ? 'Applied' : 'Apply Now'}
+                      </Button>
                     </Card.Body>
                   </Card>
                 </div>
@@ -465,7 +495,16 @@ useEffect(() => {
           <p className="job-posted">{job.posted}</p>
 
           <p className="job-description">{job.description}</p>
-          <Button variant="primary">Apply Now</Button>
+          <Button 
+            variant="primary" 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleApplyJob(job.id);
+            }}
+            disabled={appliedJobs.has(job.id)}
+          >
+            {appliedJobs.has(job.id) ? 'Applied' : 'Apply Now'}
+          </Button>
         </Card.Body>
       </Card>
     </div>

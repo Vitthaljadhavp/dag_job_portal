@@ -73,4 +73,8 @@ public class UserService {
         user.setProfileComplete(true);
         userRepository.save(user);
     }
+
+    public Optional<User> findUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
 }

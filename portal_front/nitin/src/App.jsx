@@ -11,8 +11,8 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import JobListingDashboard from "./Pages/JobListingDashboard";
 import Footer from "./components/Footer";
-import ApplicantionInsights from "./Pages/ApplicantionInsights";
 import AppliedJobs from "./Pages/AppliedJobs";
+import ApplicationInsights from "./Pages/ApplicationInsights";
 
 
 
@@ -31,8 +31,8 @@ function App() {
         <Route path="/job-seeker-dashboard" element={<JobSeekerDashboard />} />
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
         <Route path="/JobListingDashboard" element={<JobListingDashboard />} /> 
-        <Route path="/ApplicantionInsights" element={<ApplicantionInsights />} />
         <Route path="/AppliedJobs" element={<AppliedJobs />} />
+        <Route path="/ApplicationInsights" element={<ApplicationInsights/>} />
         {/* ✅ New Route */}
       </Routes>
       
