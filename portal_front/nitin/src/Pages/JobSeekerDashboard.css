@@ -1,242 +1,259 @@
-.job-seeker-dashboard {
-    height: 100vh;
-    display: flex;
-    margin: 50px 20px;
-  }
-  
-  .sidebar {
-    background: #008C5A;
-    padding: 20px;
-    width: 25%;
-    display: flex;
-    flex-direction: column;
-    margin-right: 50px;
-    border: 10px solid ;
-    border-radius:20px ;
-    /* justify-content: center; */
-    align-items: anchor-center;
-  }
-  
-  .sidebar .btn {
-    margin-bottom: 50px;
-    background-color: #f4f7f4;
-    color: black;
-    border: none;
-    width: 150px;
-    
-  }
-  
-  .sidebar .btn:hover {
-    background-color: #9be2ed;
-  }
-  
-  .content {
-    padding: 20px;
-    background: #f8f9fa;
-    width: 80%;
-    border-radius: 20px;
-    height: fit-content;
-    text-align: center;
-  }
-
-  /* .empty-space {
-    width: 25%;
-    background: #f8f9fa;
-  } */
-
-  .section {
-    background: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-control {
-    width: 50%;
-    margin-bottom: 10px;
-  }
-
-  .row-1, 
-  .row-2,
-  .row-3{
-    column-gap: 20px;
-  }
-
-  .input-group-text{
-    margin-bottom: 15px;
-  }
-  
-  .dashed-line {
-    border-top: 2px dashed #ddd;
-    margin: 15px 0;
-  }
-
-  .navbar-right {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-  }
-  
-  .logout-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 15px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    background-color: #e9d1eb;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-  }
-  
-  .logout-button:hover {
-    background-color: #bb2d3b;
-    transform: scale(1.05);
-  }
-
-
-  .footer {
-    /* position: fixed; */
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-    padding: 15px 0;
-  }
-  
-
-  .banner-container {
-    position: relative;
-    width: 100%;
-    height: 300px; /* Adjust as needed */
-    overflow: hidden;
+/* Base Setup */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
 }
 
-.banner {
-    width: 100%;
-    height: 50%;
-    object-fit: cover;
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
-.banner-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: rgb(48, 224, 115);
-    background: rgba(210, 197, 197, 0.0);
-    padding: 2rem;
-    border-radius: 10px;
-    width: 50%;
-}
-
-.banner-content h3 {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.banner-content h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 1rem 0;
-}
-
-.banner-content p {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    color: #e1da4f;
-}
-
-.banner-buttons .btn {
-    font-size: 1rem;
-    margin: 0 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 25px;
-    transition: 0.3s;
-}
-
-.banner-buttons .btn-success {
-    background-color: #008C5A;
-    border: none;
-}
-
-.banner-buttons .btn-success:hover {
-    background-color: #007e33;
-}
-
-.banner-buttons .btn-outline-light {
-  background-color: #7b6928;
-}
-
-.banner-buttons .btn-outline-light:hover {
-    background-color: white;
-    color: #000;
-}
-
-
-.banner-img {
-  width: 100%;
-  height: 20px; /* Adjust as needed */
-  object-fit: cover;
-}
-
-.banner-section {
-  position: relative;
-  margin-top: 0px; /* Adjust based on navbar height */
-}
-
-
+/* Navbar/Header */
 .navbar {
-  position: fixed;
-  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #ffffff;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
   top: 0;
+  z-index: 100;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left .logo {
+  height: 35px;
+  margin-right: 20px;
+}
+
+.navbar-center {
+  display: flex;
+  gap: 20px;
+  position: relative;
+}
+
+.navbar-center a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.navbar-center a:hover {
+  color: #0073e6;
+}
+
+/* Dropdown (Opportunities) */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
   left: 0;
-  background: transparent; /* Initially transparent */
-  transition: background 0.3s ease-in-out;
+  background-color: #ffffff;
+  min-width: 220px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 200;
+  padding: 10px 0;
+}
+
+.dropdown-content a {
+  display: block;
   padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.dropdown-content a:hover {
+  background-color: #f0f0f0;
+  color: #0073e6;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Right Section */
+.navbar-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  position: relative;
+}
+
+.search-box {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  border: none;
+  width: 300px;
+  max-width: 100%;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
   z-index: 1000;
 }
 
-.navbar.scrolled {
-  background: rgba(0, 0, 0, 0.8); /* Dark background on scroll */
+.notif,
+.profile-pic {
+  font-size: 22px;
+  cursor: pointer;
 }
 
-.navbar-left .portal-name {
-  font-size: 1.5rem;
-  font-weight: bold;
+.nav-icons span {
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Profile dropdown */
+.profile-dropdown {
+  position: relative;
+}
+
+.profile-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  width: 200px;
+  z-index: 9999;
+  padding: 10px 0;
+}
+
+.profile-menu a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.profile-menu a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Main content layout */
+.main-content {
+  display: flex;
+  height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.left-panel,
+.right-panel {
+  width: 20%;
+  background: #ffffff;
+  padding: 15px;
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  align-self: flex-start;
+}
+
+.center-panel {
+  width: 60%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Profile Card */
+.profile-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.05);
+}
+
+.avatar {
+  border-radius: 50%;
+  margin-bottom: 10px;
+  width: 80px;
+  height: 80px;
+}
+
+.profile-card .btn {
+  background-color: #0073e6;
   color: white;
-}
-
-.navbar-right .logout-button {
-  background: red;
   border: none;
-  padding: 8px 16px;
-  color: white;
+  padding: 10px 20px;
   border-radius: 20px;
-  transition: 0.3s;
+  cursor: pointer;
+  margin: 10px 0;
+  font-size: 14px;
 }
 
-.navbar-right .logout-button:hover {
-  background: darkred;
+.profile-card .stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  font-size: 14px;
 }
 
-.WholeEducation .btn1{
-  text-align: left;
-  background: none;
-  color: black;
-  font-style: italic;
-  font-weight: bolder;
-  text-decoration: underline;
+/* Center Panel Cards */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.05);
+}
+
+.promo {
+  background: #ffe0e0;
+  text-align: center;
+}
+
+.btn-dark {
+  background: #000;
+  color: white;
+  padding: 8px 16px;
   border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
+.ambassador {
+  background: #000;
+  color: white;
+  text-align: center;
+}
 
-  
-  
+.ambassador .btn {
+  background: #0073e6;
+  margin-top: 10px;
+}
+
+/* Right Panel */
+.article h4 {
+  margin: 0 0 10px;
+}
+
+.article a {
+  text-decoration: none;
+  color: #0073e6;
+}

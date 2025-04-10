@@ -17,11 +17,6 @@ public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // @ManyToOne
-    // @JoinColumn(name = "employer_id", nullable = false)
-    // private User employer;  // Assuming you already have a User entity for employers
-
     private String title;
     private String company;
     private String location;
@@ -34,6 +29,4 @@ public class Job {
     private String description ; 
     private String deadline ;
     private String status;  // Open, Closed, etc.
-    // @ManyToOne
-    // private Employer employer; // Job posted by an employer
 }

@@ -34,9 +34,9 @@ function Login() {
           navigate("/admin-dashboard");
         } else if (role === "job_seeker") {
           if (isProfileComplete) {
-            navigate("/JobListingDashboard"); 
+            navigate("/job-seeker-dashboard"); 
           } else {
-            navigate("/JobListingDashboard");
+            navigate("/job-seeker-dashboard");
           }
         } else if (role === "recruiter") {
           navigate("/recruiter-dashboard");
