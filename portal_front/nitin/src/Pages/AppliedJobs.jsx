@@ -1,6 +1,5 @@
 // AppliedJobs.jsx
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
   Search,
@@ -10,6 +9,9 @@ import {
   MapPin,
   Briefcase,
   Heart,
+  Moon,
+  Sun,
+  User,
 } from "lucide-react";
 import "./AppliedJobs.css";
 import axios from "axios";
@@ -18,7 +20,7 @@ const AppliedJobs = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("date");
   const [location, setLocation] = useState("all");
-  const [tittle, settittle] = useState("all");
+  const [role, setRole] = useState("all");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [favoriteJobs, setFavoriteJobs] = useState(() => {
@@ -28,7 +30,9 @@ const AppliedJobs = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,27 +43,25 @@ const AppliedJobs = () => {
   useEffect(() => {
     const fetchAppliedJobs = async () => {
       try {
-        // Replace '1' with the actual user ID from your auth system
-        const response = await axios.get('http://localhost:9091/api/applied-jobs/user/1');
+        const response = await axios.get("http://localhost:9091/api/applied-jobs/user/1");
         const appliedJobs = response.data;
-        
-        // Transform the data to match the frontend structure
-        const transformedJobs = appliedJobs.map(job => ({
+
+        const transformedJobs = appliedJobs.map((job) => ({
           id: job.id,
           title: job.job.title,
           company: job.job.company,
           status: job.status,
-          date: new Date(job.appliedDate).toISOString().split('T')[0],
+          date: new Date(job.appliedDate).toISOString().split("T")[0],
           location: job.job.location,
-          tittle: job.job.tittle
+          role: job.job.tittle || "N/A",
         }));
-        
+
         setJobs(transformedJobs);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch applied jobs');
+        setError("Failed to fetch applied jobs");
         setLoading(false);
-        console.error('Error fetching applied jobs:', err);
+        console.error("Error fetching applied jobs:", err);
       }
     };
 
@@ -70,15 +72,14 @@ const AppliedJobs = () => {
     localStorage.setItem("favoriteJobs", JSON.stringify(favoriteJobs));
   }, [favoriteJobs]);
 
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
+
   const toggleFavorite = (id) => {
     setFavoriteJobs((prev) =>
       prev.includes(id) ? prev.filter((jobId) => jobId !== id) : [...prev, id]
     );
-  };
-
-  const handleApplyNow = () => {
-    setShowSuccessMessage(true);
-    setTimeout(() => setShowSuccessMessage(false), 3000);
   };
 
   const openJobModal = (job) => {
@@ -96,9 +97,11 @@ const AppliedJobs = () => {
       return (
         (filterStatus === "all" || job.status === filterStatus) &&
         (location === "all" || job.location === location) &&
-        (tittle === "all" || job.tittle === tittle) &&
+        (role === "all" || job.role === role) &&
         (!favoritesOnly || favoriteJobs.includes(job.id)) &&
-        (searchQuery === "" || job.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        (searchQuery === "" ||
+          job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          job.company.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     })
     .sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -108,15 +111,31 @@ const AppliedJobs = () => {
     currentPage * jobsPerPage
   );
 
-  const uniqueLocations = ["all", ...new Set(jobs.map(job => job.location))];
-  const uniquetittles = ["all", ...new Set(jobs.map(job => job.tittle))];
-
+  const uniqueLocations = ["all", ...new Set(jobs.map((job) => job.location))];
+  const uniqueRoles = ["all", ...new Set(jobs.map((job) => job.role))];
 
   return (
     <div className={`applied-jobs-container ${darkMode ? "dark-mode" : ""}`}>
-      <Navbar />
-      <h1></h1>
-      <h1></h1>
+      {/* Navbar */}
+      <nav className="custom-navbar">
+        <div className="nav-left">
+          <h2 className="logo">JobPortal</h2>
+          <ul className="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/jobs">Jobs</a></li>
+            <li><a href="/applied">Applied</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+          </ul>
+        </div>
+        <div className="nav-right">
+          <button onClick={() => setDarkMode(!darkMode)} className="theme-toggle">
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <div className="profile-icon">
+            <User size={24} />
+          </div>
+        </div>
+      </nav>
 
       {showSuccessMessage && (
         <div className="success-message">
@@ -124,17 +143,8 @@ const AppliedJobs = () => {
         </div>
       )}
 
-      {loading && (
-        <div className="loading-message">
-          Loading your applications...
-        </div>
-      )}
-
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
+      {loading && <div className="loading-message">Loading your applications...</div>}
+      {error && <div className="error-message">{error}</div>}
 
       {!loading && !error && (
         <>
@@ -168,15 +178,19 @@ const AppliedJobs = () => {
                 <MapPin size={16} />
                 <select value={location} onChange={(e) => setLocation(e.target.value)}>
                   {uniqueLocations.map((loc) => (
-                    <option key={loc} value={loc}>{loc}</option>
+                    <option key={loc} value={loc}>
+                      {loc}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="filter-item">
                 <Briefcase size={16} />
-                <select value={tittle} onChange={(e) => settittle(e.target.value)}>
-                  {uniquetittles.map((r) => (
-                    <option key={r} value={r}>{r}</option>
+                <select value={role} onChange={(e) => setRole(e.target.value)}>
+                  {uniqueRoles.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -187,7 +201,8 @@ const AppliedJobs = () => {
                     type="checkbox"
                     checked={favoritesOnly}
                     onChange={() => setFavoritesOnly(!favoritesOnly)}
-                  /> Favorites
+                  />{" "}
+                  Favorites
                 </label>
               </div>
               <button
@@ -196,7 +211,7 @@ const AppliedJobs = () => {
                   setFilterStatus("all");
                   setSortBy("date");
                   setLocation("all");
-                  settittle("all");
+                  setRole("all");
                   setFavoritesOnly(false);
                   setSearchQuery("");
                 }}
@@ -223,27 +238,41 @@ const AppliedJobs = () => {
                 <p className={`status ${job.status.toLowerCase()}`}><strong>Status:</strong> {job.status}</p>
                 <p><strong>Date Applied:</strong> {job.date}</p>
                 <p><strong>Location:</strong> {job.location}</p>
-                <p><strong>Tittle:</strong> {job.title}</p>
+                <p><strong>Role:</strong> {job.role}</p>
               </div>
             ))}
           </div>
 
           <div className="pagination-controls">
-            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>⬅️ Prev</button>
+            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
+              ⬅️ Prev
+            </button>
             <span>Page {currentPage}</span>
-            <button onClick={() => setCurrentPage((prev) => prev * jobsPerPage < filteredJobs.length ? prev + 1 : prev)} disabled={currentPage * jobsPerPage >= filteredJobs.length}>Next ➡️</button>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  prev * jobsPerPage < filteredJobs.length ? prev + 1 : prev
+                )
+              }
+              disabled={currentPage * jobsPerPage >= filteredJobs.length}
+            >
+              Next ➡️
+            </button>
           </div>
 
+          {/* Job Details Modal */}
           {isModalOpen && selectedJob && (
             <div className="modal-overlay" onClick={closeJobModal}>
               <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button" onClick={closeJobModal}>×</button>
+                <button className="close-button" onClick={closeJobModal}>
+                  ×
+                </button>
                 <h3>{selectedJob.title}</h3>
                 <p><strong>Company:</strong> {selectedJob.company}</p>
                 <p><strong>Status:</strong> {selectedJob.status}</p>
                 <p><strong>Date Applied:</strong> {selectedJob.date}</p>
                 <p><strong>Location:</strong> {selectedJob.location}</p>
-                <p><strong>tittle:</strong> {selectedJob.tittle}</p>
+                <p><strong>Role:</strong> {selectedJob.role}</p>
               </div>
             </div>
           )}

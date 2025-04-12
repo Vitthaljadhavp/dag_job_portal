@@ -231,6 +231,7 @@ useEffect(() => {
         <div className="navbar-logo">
           <img src="/logo.png" alt="Logo" className="logo-img" />
           <span className="portal-name">DAG Job Portal</span>
+          
         </div>
       </div>
 
@@ -353,7 +354,7 @@ useEffect(() => {
     </div>
 
       {/* 🔹 Job Listings Section */}
-    <div className="popular-search-section mt-5">
+    <div className="popular-title">
       <h3 className="text-center">Popular Search</h3>
       <div className="d-flex justify-content-center gap-4 m-5">
         <div className="job-list mt-4">
