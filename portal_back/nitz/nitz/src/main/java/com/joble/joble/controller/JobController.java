@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/jobs")
-@CrossOrigin("http://localhost:3001")
+@CrossOrigin("http://localhost:3000")
 public class JobController {
 
     @Autowired
