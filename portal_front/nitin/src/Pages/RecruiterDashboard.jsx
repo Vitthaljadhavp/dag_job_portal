@@ -67,14 +67,6 @@ const RecruiterDashboard = () => {
         alert(`Failed to post job: ${error.response?.data?.message || error.message}`);
       }
     };
-    
-    
-    
-    
-
-
-
-  
   
 
   useEffect(() => {

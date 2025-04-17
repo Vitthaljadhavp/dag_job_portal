@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.* ;
 
 @Service
 public class UserService {
@@ -76,5 +77,9 @@ public class UserService {
 
     public Optional<User> findUserById(Long userId) {
         return userRepository.findById(userId);
+    }
+
+    public List<User> findUsersByRole(String role){
+        return userRepository.findByRole(role) ;
     }
 }

@@ -12,10 +12,9 @@ import com.joble.joble.service.UserService;
 import com.joble.joble.service.EmailService;
 import com.joble.joble.security.JwtTokenProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.* ;
 
 @RestController
 @RequestMapping("/api/users")
@@ -119,14 +118,37 @@ public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
     }
 
     @PutMapping("/update-profile-status/{userId}")
-public ResponseEntity<?> updateProfileStatus(@PathVariable Long userId) {
+    public ResponseEntity<?> updateProfileStatus(@PathVariable Long userId) {
+        try {
+            userService.updateProfileCompletionStatus(userId);
+            return ResponseEntity.ok("Profile updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating profile: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/job_seekers")
+public ResponseEntity<?> getJobSeekers() {
     try {
-        userService.updateProfileCompletionStatus(userId);
-        return ResponseEntity.ok("Profile updated successfully");
+        List<User> jobSeekers = userService.findUsersByRole("job_seeker");
+        List<User> recruiters = userService.findUsersByRole("recruiter");
+
+        if (jobSeekers.isEmpty() && recruiters.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found");
+        }
+
+        Map<String, List<User>> response = new HashMap<>();
+        response.put("jobSeekers", jobSeekers);
+        response.put("recruiters", recruiters);
+
+        return ResponseEntity.ok(response);
+
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error updating profile: " + e.getMessage());
+                .body("Error fetching users: " + e.getMessage());
     }
 }
+
 
 }

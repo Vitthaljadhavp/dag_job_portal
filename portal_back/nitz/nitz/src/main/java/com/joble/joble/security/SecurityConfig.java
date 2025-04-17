@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/register", "/api/users/login", "/api/users/forgot-password", "/api/users/reset-password").permitAll()
                 .requestMatchers("/oauth2/**", "/login/**", "/auth/user").permitAll()
                 .requestMatchers("/error").permitAll()
+                .requestMatchers("/api/users/job_seekers").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll()
                 
                 // Job Seeker Profile Endpoints (Authenticated Only)
@@ -85,7 +86,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ Allow React frontend
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3001")); // ✅ Allow React frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));
