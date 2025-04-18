@@ -11,6 +11,7 @@ import com.joble.joble.service.AppliedJobsService;
 @RestController
 @RequestMapping("/api/applied-jobs")
 @CrossOrigin("http://localhost:3001")
+// @CrossOrigin(origins = "http://localhost:3001")
 public class AppliedJobsController {
     
     private final AppliedJobsService appliedJobsService;
