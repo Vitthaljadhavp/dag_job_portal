@@ -1,12 +1,111 @@
 import React, { useState, useEffect, useRef } from "react";
 import './JobSeekerDashboard.css';
-import { FaUserCircle, FaFileAlt, FaBookmark, FaBell, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaUserCircle, FaFileAlt, FaBookmark, FaBell, FaCog, FaSignOutAlt, FaUpload } from "react-icons/fa";
 import { MdWork } from "react-icons/md";
 import { IoNotifications } from "react-icons/io5";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const JobSeekerDashboard = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [uploadStatus, setUploadStatus] = useState({ photo: '', resume: '' });
+  const [profileScore, setProfileScore] = useState(0);
   const profileRef = useRef(null);
+  const navigate = useNavigate();
+
+  const calculateProfileScore = (data) => {
+    let score = 0;
+    const totalFields = 11; // Total number of profile fields
+
+    // Basic Information
+    if (data.fullName) score += 1;
+    if (data.email) score += 1;
+    if (data.mobileNumber) score += 1;
+    if (data.address) score += 1;
+    if (data.dateOfBirth) score += 1;
+    if (data.gender) score += 1;
+    if (data.profilePictureUrl) score += 1;
+    if (data.resumeUrl) score += 1;
+    if (data.aboutMe) score += 1;
+    if (data.educationList?.length > 0) score += 1;
+    if (data.skills?.length > 0) score += 1;
+
+    const percentage = (score / totalFields) * 100;
+    setProfileScore(Math.round(percentage));
+    return percentage;
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('token');
+      
+      const response = await axios.get(`http://localhost:9091/api/users/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setUserData(response.data);
+      calculateProfileScore(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setIsLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (type, file) => {
+    try {
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      
+      // Create a job seeker profile object with minimum required fields
+      const profile = {
+        id: userId,
+        fullName: userData?.fullName || '',
+        email: userData?.email || '',
+        mobileNumber: userData?.mobileNumber || ''
+      };
+      
+      formData.append('profile', new Blob([JSON.stringify(profile)], { type: 'application/json' }));
+      
+      if (type === 'photo') {
+        formData.append('profilePicture', file);
+      } else {
+        formData.append('resume', file);
+      }
+
+      const response = await axios.post(
+        'http://localhost:9091/api/job-seeker/save',
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        setUploadStatus(prev => ({
+          ...prev,
+          [type]: 'Upload successful!'
+        }));
+        // Refresh user data to show new uploads
+        fetchUserData();
+      }
+    } catch (error) {
+      console.error(`Error uploading ${type}:`, error);
+      setUploadStatus(prev => ({
+        ...prev,
+        [type]: 'Upload failed. Please try again.'
+      }));
+    }
+  };
 
   const toggleProfileMenu = () => setShowProfileMenu(prev => !prev);
 
@@ -20,6 +119,10 @@ const JobSeekerDashboard = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    fetchUserData();
   }, []);
 
   const ProfileDropdownMenu = ({ show }) => (
@@ -36,17 +139,77 @@ const JobSeekerDashboard = () => {
 
   const ProfileCard = () => (
     <div className="profile-card">
-      <img className="avatar" src="https://via.placeholder.com/80" alt="Profile" />
-      <h3>Nitin Gaikwad</h3>
-      <p>B.Tech/B.E. Computers<br />@ Indira College of Engineering</p>
-      <button className="btn btn-primary">Complete profile</button>
+      <div className="profile-photo-container">
+        <img 
+          className="avatar" 
+          src={userData?.profilePictureUrl || "https://via.placeholder.com/80"} 
+          alt="Profile" 
+        />
+        <label className="upload-button">
+          <FaUpload />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              handleFileUpload('photo', e.target.files[0]);
+              calculateProfileScore({ ...userData, profilePictureUrl: URL.createObjectURL(e.target.files[0]) });
+            }}
+            style={{ display: 'none' }}
+          />
+        </label>
+        {uploadStatus.photo && <p className="upload-status">{uploadStatus.photo}</p>}
+      </div>
+
+      <h3>{userData?.fullName || 'Loading...'}</h3>
+      <p>{userData?.workStatus === 'fresher' ? 'Fresher' : 'Experienced'}<br />
+         {userData?.education || 'Complete your profile'}</p>
+      
+      <div className="resume-upload-section">
+        <h4>Resume</h4>
+        <label className="resume-upload-button">
+          <FaUpload /> {userData?.resumeUrl ? 'Update Resume' : 'Upload Resume'}
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => {
+              handleFileUpload('resume', e.target.files[0]);
+              calculateProfileScore({ ...userData, resumeUrl: true });
+            }}
+            style={{ display: 'none' }}
+          />
+        </label>
+        {userData?.resumeUrl && (
+          <a href={userData.resumeUrl} target="_blank" rel="noopener noreferrer" className="view-resume-link">
+            View Current Resume
+          </a>
+        )}
+        {uploadStatus.resume && <p className="upload-status">{uploadStatus.resume}</p>}
+      </div>
+      
+      {/* Profile Completion Score */}
+      <div className="completion-score">
+        <div className="score-circle" style={{
+          background: `conic-gradient(#00d084 ${profileScore}%, #eee ${profileScore}% 100%)`
+        }}>
+          <span>{profileScore}%</span>
+        </div>
+        <p>Profile Completion</p>
+      </div>
+
+      <button 
+        className="btn btn-primary"
+        onClick={() => navigate('/profile-completion')}
+      >
+        {profileScore === 100 ? 'View Profile' : 'Complete Profile'}
+      </button>
+      
       <div className="stats">
         <div>
-          <strong>120</strong>
+          <strong>{userData?.searchAppearances || '0'}</strong>
           <p>Search appearances</p>
         </div>
         <div>
-          <strong>33</strong>
+          <strong>{userData?.recruiterActions || '0'}</strong>
           <p>Recruiter actions</p>
         </div>
       </div>

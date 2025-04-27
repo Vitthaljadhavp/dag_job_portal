@@ -1,16 +1,19 @@
 package com.joble.joble.model;
 
 import jakarta.persistence.Entity;
-
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "applied_jobs")
 public class AppliedJobs {
-    
-    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,28 +23,35 @@ public class AppliedJobs {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
-    @Column(name = "applied_date")
+    @Column(name = "applied_date", nullable = false)
     private LocalDateTime appliedDate;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private String status; // e.g. "PENDING", "ACCEPTED", "REJECTED"
 
-    
     public AppliedJobs() {
+        // Default constructor
     }
 
     // Constructor with fields
     public AppliedJobs(User user, Job job) {
         this.user = user;
         this.job = job;
-        this.appliedDate = LocalDateTime.now();
-        this.status = "PENDING";
+        this.appliedDate = LocalDateTime.now(); // Automatically set the current date-time
+        this.status = "PENDING"; // Default status
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.appliedDate = LocalDateTime.now();
+    }
+
+
+    // Getter and Setter methods
     public Long getId() {
         return id;
     }

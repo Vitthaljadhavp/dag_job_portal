@@ -33,12 +33,13 @@
 .navbar-links {
   display: flex;
   list-style: none;
-  padding: 0;
+  padding: 20px;
   margin: 0;
+  background-color: #f1f1f1;
 }
 
 .navbar-links li {
-  margin-right: 20px;
+  margin: 0 20px; /* Equal spacing on left and right */
 }
 
 .navbar-links a {
@@ -49,11 +50,12 @@
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  padding: 0 15px; /* Additional equal padding on left and right of the text */
   gap: 5px;
 }
 
 .navbar-links a:hover {
-  color: #ffd700;
+  color: #333; /* Changed hover color to black */
   transform: scale(1.05);
 }
 
@@ -61,7 +63,7 @@
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 25px; /* Increased spacing between buttons */
 }
 
 .post-job-btn, .view-job-btn {
@@ -73,17 +75,9 @@
   transition: 0.3s;
 }
 
-.post-job-btn {
-  background-color: #00a859;
-  color: white;
-}
-
-.view-job-btn {
-  background-color: #ffd700;
-  color: black;
-}
-
 .post-job-btn:hover, .view-job-btn:hover {
+  background-color: #333; /* Changed hover color to black */
+  color: white;
   transform: scale(1.05);
 }
 

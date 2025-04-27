@@ -78,9 +78,9 @@ const Register = () => {
         {/* Left Section: Info Panel */}
         <div className="register-info">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-            alt="User"
-            className="register-info-img"
+            //src={require("../Assets/Registration-image1.jpg")}
+            alt="Registration Illustration"
+            style={{ width: '100%', marginBottom: '20px', borderRadius: '8px' }}
           />
           <h3>On registering, you can</h3>
           <ul>

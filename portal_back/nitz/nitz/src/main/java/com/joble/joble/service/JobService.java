@@ -28,6 +28,11 @@ public class JobService {
     //     return jobRepository.findByEmployerId(employerId);
     // }
 
+    public Optional<Job> findJobById(Long jobId) {
+        return jobRepository.findById(jobId);
+    }
+    
+
     public Optional<Job> getJobById(Long id) {
         return jobRepository.findById(id);
     }

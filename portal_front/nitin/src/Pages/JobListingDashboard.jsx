@@ -3,7 +3,7 @@ import { Dropdown, Modal, Button, Card } from "react-bootstrap";
 import axios from "axios";
 import { FaHeart, FaRegHeart } from "react-icons/fa"; // Import save job icons
 import moment from "moment"; // For calculating posting days
-import {  InputGroup } from "react-bootstrap";
+import { InputGroup } from "react-bootstrap";
 import { FaMapMarkerAlt, FaBriefcase, FaSearch } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./JobListingDashboard.css";
@@ -23,145 +23,65 @@ const JobListingDashboard = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [isScrolled, setIsScrolled] = useState(false);
     const [appliedJobs, setAppliedJobs] = useState(new Set()); // Track applied jobs
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
 
-  
-  // Dummy job listings
-const dummyJobs = [
-  {
-    id: "dummy-1",
-    title: "Software Developer",
-    company: "Tech Corp",
-    location: "New York, USA",
-    jobType: "Full-Time",
-    jobMode: "Remote",
-    status: "Open",
-    salary: "$80,000 - $100,000",
-    skills: ["JavaScript", "React", "Node.js"],
-    postedDate: "3 days ago",
-    description: "Exciting opportunity for a Software Developer to join our growing team..."
-  },
-  {
-    id: "dummy-2",
-    title: "Data Analyst",
-    company: "Data Insights Ltd",
-    location: "San Francisco, USA",
-    jobType: "Part-Time",
-    jobMode: "Hybrid",
-    status: "Open",
-    salary: "$60,000 - $75,000",
-    skills: ["SQL", "Python", "Tableau"],
-    postedDate: "1 week ago",
-    description: "Looking for a Data Analyst to work with a fast-paced team..."
-  },
-  {
-    id: "dummy-3",
-    title: "UI/UX Designer",
-    company: "Creative Solutions",
-    location: "Los Angeles, USA",
-    jobType: "Contract",
-    jobMode: "On-Site",
-    status: "Hiring Soon",
-    salary: "$50,000 - $70,000",
-    skills: ["Figma", "Adobe XD", "UX Research"],
-    postedDate: "2 weeks ago",
-    description: "We need a UI/UX Designer to create stunning interfaces..."
-  },
-  {
-    id: "dummy-4",
-    title: "Cybersecurity Engineer",
-    company: "SecureTech Inc",
-    location: "Austin, USA",
-    jobType: "Full-Time",
-    jobMode: "Remote",
-    status: "Open",
-    salary: "$90,000 - $120,000",
-    skills: ["Cybersecurity", "Network Security", "Python"],
-    postedDate: "5 days ago",
-    description: "Join our team to secure enterprise-level systems and networks..."
-  },
-  {
-    id: "dummy-5",
-    title: "Digital Marketing Specialist",
-    company: "MarketGenius",
-    location: "Chicago, USA",
-    jobType: "Internship",
-    jobMode: "Hybrid",
-    status: "Open",
-    salary: "Stipend: $1,000/month",
-    skills: ["SEO", "Google Ads", "Social Media Marketing"],
-    postedDate: "4 days ago",
-    description: "Exciting opportunity for a Digital Marketing Specialist to handle campaigns..."
-  }
-];
+    // Search & Filter State
+    const [searchTitle, setSearchTitle] = useState("");
+    const [searchLocation, setSearchLocation] = useState("");
+    const [selectedJobType, setSelectedJobType] = useState("");
+    
+    // 🔹 Function to filter jobs
+    const filterJobs = () => {
+      let sourceJobs = jobs.length > 0 ? jobs : []; // If jobs are empty, return empty array
+      
+      let filtered = sourceJobs.filter(job =>
+        job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+        job.location.toLowerCase().includes(searchLocation.toLowerCase()) &&
+        (selectedJobType ? job.jobType === selectedJobType : true)
+      );
+      setFilteredJobs(filtered);
+    };
 
-  // Search & Filter State
-  const [searchTitle, setSearchTitle] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
-  const [selectedJobType, setSelectedJobType] = useState("");
-  
-  // 🔹 Filter Jobs Based on Search & Selection
-  // const filterJobs = () => {
-  //   let filtered = jobs.filter(job =>
-  //     job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-  //     job.location.toLowerCase().includes(searchLocation.toLowerCase()) &&
-  //     (selectedJobType ? job.jobType === selectedJobType : true)
-  //   );
-  //   setFilteredJobs(filtered);
-  // }; 
+    // Function to Filter Jobs Dynamically
+    useEffect(() => {
+      const filtered = jobs.filter(job =>
+        (job.title?.toLowerCase() || "").includes(searchTitle.toLowerCase()) &&
+        (job.location?.toLowerCase() || "").includes(searchLocation.toLowerCase()) &&
+        (selectedJobType ? job.jobType === selectedJobType : true)
+      );  
+      setFilteredJobs(filtered);
+    }, [searchTitle, searchLocation, selectedJobType, jobs]); // Runs when any of these change
 
 
-  // 🔹 Function to filter jobs
-const filterJobs = () => {
-  let sourceJobs = jobs.length > 0 ? jobs : dummyJobs; // Use API jobs if available, else use dummy jobs
+    // 🔹 Automatically filter jobs when search inputs change
+    useEffect(() => {
+      filterJobs();
+    }, [searchTitle, searchLocation, selectedJobType]);
 
-  let filtered = sourceJobs.filter(job =>
-    job.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-    job.location.toLowerCase().includes(searchLocation.toLowerCase()) &&
-    (selectedJobType ? job.jobType === selectedJobType : true)
-  );
-  setFilteredJobs(filtered);
-};
+    useEffect(() => {
+        const storedProfile = JSON.parse(localStorage.getItem("userProfile"));
+        if (storedProfile) {
+          setUserProfile(storedProfile);
+        }
+     }, []);
 
-  // 🔹 Function to Filter Jobs Dynamically
-useEffect(() => {
-  const filtered = jobs.filter(job =>
-    (job.title?.toLowerCase() || "").includes(searchTitle.toLowerCase()) &&
-    (job.location?.toLowerCase() || "").includes(searchLocation.toLowerCase()) &&
-    (selectedJobType ? job.jobType === selectedJobType : true)
-  );  
-  setFilteredJobs(filtered);
-}, [searchTitle, searchLocation, selectedJobType, jobs]); // Runs when any of these change
+    // Fetch jobs from backend
+    useEffect(() => {
+        axios.get("http://localhost:9091/api/jobs")
+          .then(response => {
+            setJobs(response.data);
+            setFilteredJobs(response.data.length > 0 ? response.data : []); // Show empty array if API returns no jobs
+          })
+          .catch(error => {
+            console.error("Error fetching jobs:", error);
+            setFilteredJobs([]); // If API fails, show empty jobs array
+          });
+    }, []); // Empty dependency array to run once on mount
 
-
-  // 🔹 Automatically filter jobs when search inputs change
-useEffect(() => {
-  filterJobs();
-}, [searchTitle, searchLocation, selectedJobType]);
-
-  useEffect(() => {
-    const storedProfile = JSON.parse(localStorage.getItem("userProfile"));
-    if (storedProfile) {
-      setUserProfile(storedProfile);
-    }
-  }, []);
-
-
-
-  // 🔹 Fetch jobs from backend
-useEffect(() => {
-  axios.get("http://localhost:9091/api/jobs")
-    .then(response => {
-      setJobs(response.data);
-      setFilteredJobs(response.data.length > 0 ? response.data : dummyJobs); // Show dummy jobs if API returns empty
-    })
-    .catch(error => {
-      console.error("Error fetching jobs:", error);
-      setFilteredJobs(dummyJobs); // If API fails, use dummy jobs
-    });
-}, []);
-
-
-  // Detect scrolling for navbar transparency effect
+    // Detect scrolling for navbar transparency effect
     useEffect(() => {
       const handleScroll = () => {
         setIsScrolled(window.scrollY > 50);
@@ -170,57 +90,94 @@ useEffect(() => {
       return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Handle Logout with Confirmation
-  const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-      localStorage.removeItem("authToken"); // Clear JWT
-      sessionStorage.clear(); // Clear session storage
-      setTimeout(() => navigate("/login"), 500); // Smooth logout transition
-    }
-  };
+    const [checkingAuth, setCheckingAuth] = useState(true);
 
-  // Toggle Save Job
-  const toggleSaveJob = (jobId) => {
-    setSavedJobs((prevSaved) => {
-      const newSaved = new Set(prevSaved);
-      if (newSaved.has(jobId)) {
-        newSaved.delete(jobId);
+    useEffect(() => {                                         // Check authentication on mount
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.log("No token found. Redirecting to login...");
+        navigate("/login");
       } else {
-        newSaved.add(jobId);
+        console.log("Token found. User is authenticated.");
+        setCheckingAuth(false);
       }
-      return newSaved;
-    });
-  };
+    }, [navigate]);
 
-  // Handle job application
-  const handleApplyJob = async (jobId) => {
-    try {
-      // Get user ID from localStorage or userProfile
-      const userId = userProfile?.id || 1; // Fallback to 1 if userProfile not available
-      
-      // Make API call to apply for job
-      const response = await axios.post('http://localhost:9091/api/applied-jobs/apply', null, {
-        params: {
-          userId: userId,
-          jobId: jobId
+    if (checkingAuth) {
+      return null;
+    }
+
+    const handleLogout = () => {                              // HANDLE LOGOUT
+      console.log("Logout initiated...");
+
+      const confirmLogout = window.confirm("Are you sure you want to log out?");
+      console.log("User confirmation for logout:", confirmLogout);
+
+      if (confirmLogout) {
+        console.log("Clearing localStorage and sessionStorage...");
+        
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("isProfileComplete");
+        sessionStorage.clear();
+
+        setLoggedIn(false);
+        console.log("Logged out from state.");
+
+        console.log("Redirecting to login page...");
+        navigate("/login");
+
+        // Hard reload to prevent back button cache
+        setTimeout(() => {
+          window.location.reload();
+          console.log("Page reloaded after logout.");
+        }, 300);
+      } else {
+        console.log("Logout cancelled by user.");
+      }
+    };
+
+    const toggleSaveJob = (jobId) => {                            // Toggle Save Job
+      setSavedJobs((prevSaved) => {
+        const newSaved = new Set(prevSaved);
+        if (newSaved.has(jobId)) {
+          newSaved.delete(jobId);
+        } else {
+          newSaved.add(jobId);
         }
+        return newSaved;
       });
+    };
 
-      if (response.status === 200) {
-        // Add job to applied jobs set
-        setAppliedJobs(prev => new Set([...prev, jobId]));
-        alert('Successfully applied for the job!');
+    const API = axios.create({
+      baseURL: 'http://localhost:9091/api',
+    });
+    
+    // If you are using JWT token authentication, add token here
+    API.interceptors.request.use((config) => {
+      const token = localStorage.getItem('token'); // adjust based on your token storage
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-    } catch (error) {
-      if (error.response?.status === 400 && error.response?.data?.includes('already applied')) {
-        alert('You have already applied for this job!');
-      } else {
-        alert('Error applying for job. Please try again later.');
+      return config;
+    });
+
+    // Handle job application
+    const applyToJob = async (jobId) => {
+      try {
+        const response = await API.post(`/applied-jobs/apply/${jobId}`);
+        alert('Applied successfully!');
+        setAppliedJobs((prevApplied) => new Set(prevApplied.add(jobId)));
+      } catch (error) {
         console.error('Error applying for job:', error);
+        alert(error.response?.data?.message || 'Failed to apply!');
       }
-    }
-  };
+    };
+    
+  
+
 
   return (
     <div className="dashboard-container ">
@@ -255,7 +212,7 @@ useEffect(() => {
             </Dropdown.Item>
             <Dropdown.Item href="/contact-us">Contact Us</Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item href="/login" onClick={handleLogout}>Logout</Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
     </nav>
@@ -358,150 +315,25 @@ useEffect(() => {
       <h3 className="text-center">Popular Search</h3>
       <div className="d-flex justify-content-center gap-4 m-5">
         <div className="job-list mt-4">
-          {filteredJobs.length > 0 ? (
-            <div className="row">
-              {filteredJobs.map((job) => (
-                <div key={job.id} className="col-md-4 mb-4">
-                  <Card className="job-card">
-                    <Card.Body>
-                      <div className="save-icon" onClick={() => toggleSaveJob(job.id)}>
-                        {savedJobs.has(job.id) ? <FaHeart color="red" /> : <FaRegHeart />}
-                      </div>
-
-                      <h5 className="job-title">{job.title}</h5>
-                      <p className="job-company">{job.companyName}</p>
-                      <p className="job-location">📍 {job.location}</p>
-                      <p className="job-info">
-                        <strong>Type:</strong> {job.jobType} | 
-                        <strong> Mode:</strong> {job.jobMode} |
-                        <strong> Status:</strong> {job.status}
-                      </p>
-                      <p className="job-salary">💰 Salary: {job.salary || "Not Disclosed"}</p>
-                      <p className="job-skills">
-                        <strong>Skills:</strong> {job.skills ? job.skills.join(", ") : "N/A"}
-                      </p>
-                      <p className="job-posted">🕒 Posted {moment(job.postedDate).fromNow()}</p>
-                      <p className="job-description">{job.description.slice(0, 100)}...</p>
-                      <Button 
-                        variant="primary" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleApplyJob(job.id);
-                        }}
-                        disabled={appliedJobs.has(job.id)}
-                      >
-                        {appliedJobs.has(job.id) ? 'Applied' : 'Apply Now'}
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </div>
-              ))}
-            </div>
-          ) : (
-        // Dummy Job Listings when no jobs are available
-
-            
-
-<div className="row">
-  {[
-    {
-      title: "Software Developer",
-      company: "Tech Corp",
-      location: "📍 New York, USA",
-      type: "Full-Time",
-      mode: "Remote",
-      status: "Open",
-      salary: "$80,000 - $100,000",
-      skills: "JavaScript, React, Node.js",
-      posted: "🕒 Posted 3 days ago",
-      description: "Exciting opportunity for a Software Developer to join our growing team..."
-    },
-    {
-      title: "Data Analyst",
-      company: "Data Insights Ltd",
-      location: "📍 San Francisco, USA",
-      type: "Part-Time",
-      mode: "Hybrid",
-      status: "Open",
-      salary: "$60,000 - $75,000",
-      skills: "SQL, Python, Tableau",
-      posted: "🕒 Posted 1 week ago",
-      description: "Looking for a Data Analyst to work with a fast-paced team..."
-    },
-    {
-      title: "UI/UX Designer",
-      company: "Creative Solutions",
-      location: "📍 Los Angeles, USA",
-      type: "Contract",
-      mode: "On-Site",
-      status: "Hiring Soon",
-      salary: "$50,000 - $70,000",
-      skills: "Figma, Adobe XD, UX Research",
-      posted: "🕒 Posted 2 weeks ago",
-      description: "We need a UI/UX Designer to create stunning interfaces..."
-    },
-    {
-      title: "Cybersecurity Engineer",
-      company: "SecureTech Inc",
-      location: "📍 Austin, USA",
-      type: "Full-Time",
-      mode: "Remote",
-      status: "Open",
-      salary: "$90,000 - $120,000",
-      skills: "Cybersecurity, Network Security, Python",
-      posted: "🕒 Posted 5 days ago",
-      description: "Join our team to secure enterprise-level systems and networks..."
-    },
-    {
-      title: "Digital Marketing Specialist",
-      company: "MarketGenius",
-      location: "📍 Chicago, USA",
-      type: "Internship",
-      mode: "Hybrid",
-      status: "Open",
-      salary: "Stipend: $1,000/month",
-      skills: "SEO, Google Ads, Social Media Marketing",
-      posted: "🕒 Posted 4 days ago",
-      description: "Exciting opportunity for a Digital Marketing Specialist to handle campaigns..."
-    }
-  ].map((job, index) => (
-    <div key={index} className="col-md-4 mb-4"> {/* 3 columns per row */}
+        {filteredJobs.length > 0 ? (
+  filteredJobs.map((job) => (
+    <div key={job.id} className="col-md-4 mb-4">
       <Card className="job-card">
         <Card.Body>
-          {/* Save Job Icon */}
-          <div className="save-icon">
-            <FaRegHeart />
-          </div>
-
           <h5 className="job-title">{job.title}</h5>
           <p className="job-company">{job.company}</p>
-          <p className="job-location">{job.location}</p>
+          <p className="job-location">📍 {job.location}</p>
+          <p className="job-mode">📍 {job.mode}</p>
+          <p className="job-salary">📍 {job.salary}</p>
+          <p className="job-status">📍 {job.status}</p>
+          <p className="job-description">📍 {job.description}</p>          
+          <p className="job-deadline">📍 {job.deadline}</p>
+          
+          
 
-          {/* Job Type, Mode & Status */}
-          <p className="job-info">
-            <strong>Type:</strong> {job.type} | 
-            <strong> Mode:</strong> {job.mode} |
-            <strong> Status:</strong> {job.status}
-          </p>
-
-          {/* Salary */}
-          <p className="job-salary">💰 Salary: {job.salary}</p>
-
-          {/* Skills Required */}
-          <p className="job-skills">
-            <strong>Skills:</strong> {job.skills}
-          </p>
-
-          {/* Posting Days Calculation */}
-          <p className="job-posted">{job.posted}</p>
-
-          <p className="job-description">{job.description}</p>
-          <Button 
-            variant="primary" 
-            onClick={(e) => {
-              e.stopPropagation();
-              handleApplyJob(job.id);
-            }}
+          <Button
+            variant="primary"
+            onClick={() => applyToJob(job.id)}
             disabled={appliedJobs.has(job.id)}
           >
             {appliedJobs.has(job.id) ? 'Applied' : 'Apply Now'}
@@ -509,10 +341,10 @@ useEffect(() => {
         </Card.Body>
       </Card>
     </div>
-  ))}
-</div>
-
-      )}
+  ))
+) : (
+  <p>No jobs available based on your search criteria.</p>
+)}
     </div>
   </div>
 </div>

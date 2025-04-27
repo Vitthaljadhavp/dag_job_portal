@@ -14,12 +14,14 @@ body {
   background-color: #008c5a;
   padding: 10px 20px;
   color: white;
+  
 }
 
 /* Logo & Title */
 .navbar-left {
   display: flex;
   align-items: center;
+  gap: 40px;
 }
 
 .navbar-logo {
@@ -81,6 +83,7 @@ body {
   color: #00D084;
   padding: 8px 15px;
   border-radius: 20px;
+  align-items: center;
   text-decoration: none;
   font-weight: bold;
 }
@@ -110,6 +113,9 @@ body {
   text-align: left;
   height: fit-content;
   animation: slideIn 0.8s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .new-to-naukri h2 {
@@ -237,7 +243,33 @@ body {
 }
 
 /* Social Login Buttons */
-.google-signin-button,
+.google-signin-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.google-signin-button:hover {
+  background-color: #f8f8f8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.google-signin-button img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
 .linkedin-signin-button,
 .github-signin-button {
   display: flex;
@@ -246,7 +278,7 @@ body {
   width: 100%;
   padding: 12px;
   margin-bottom: 10px;
-  background-color: white;
+  background-color: #00D084;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
@@ -254,16 +286,14 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
-.google-signin-button img,
 .linkedin-signin-button img {
   width: 20px;
   margin-right: 10px;
 }
 
-.google-signin-button:hover,
 .linkedin-signin-button:hover,
 .github-signin-button:hover {
-  background-color: #f0f0f0;
+  background-color: #00D084;
   transform: scale(1.05);
 }
 
@@ -275,5 +305,99 @@ body {
 }
 
 .otp:hover {
+  text-decoration: underline;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.otp-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 400px;
+  position: relative;
+}
+
+.otp-modal h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.otp-input-container {
+  margin-bottom: 20px;
+}
+
+.otp-input-container input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.otp-number-info {
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.get-otp-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #00d084;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.get-otp-button:hover {
+  background-color: #00b873;
+}
+
+.modal-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.or-email-login {
+  text-align: center;
+  color: #666;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.or-email-login a {
+  color: #00d084;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.or-email-login a:hover {
   text-decoration: underline;
 }

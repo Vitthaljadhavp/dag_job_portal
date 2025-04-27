@@ -83,7 +83,7 @@ body {
 }
 
 .navbar-center a:hover {
-  color: #0073e6;
+  color: #f4f9fd;
 }
 
 /* Dropdown (Opportunities) */
@@ -242,62 +242,80 @@ body {
 /* Profile Card */
 /* Profile Card (Updated with 3D Animation) */
 .profile-card {
-  background: linear-gradient(135deg, #eafaf1, #d5f5e3); /* light green base */
-  color: #1e392a; /* dark greenish text */
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(34, 139, 84, 0.15); /* soft green shadow */
-  padding: 25px;
-  margin: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-left: 4px solid #2ecc71;
-}
-
-.profile-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 15px 30px rgba(46, 204, 113, 0.3); /* deeper green glow */
+  background: #f0fff7;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .profile-card .avatar {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  margin-bottom: 10px;
-  border: 2px solid #2ecc71;
-  box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+  margin-bottom: 15px;
+  object-fit: cover;
+  border: 2px solid #00d084;
 }
 
 .profile-card h3 {
-  margin-top: 10px;
-  color: #145a32;
+  margin: 0 0 10px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .profile-card p {
+  color: #666;
+  margin: 0 0 15px;
   font-size: 14px;
-  color: #2e7d32;
+  line-height: 1.4;
+}
+
+.profile-card .btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .profile-card .btn-primary {
-  margin-top: 10px;
-  background: #2ecc71;
-  border: none;
+  background-color: #00d084;
   color: white;
-  padding: 8px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
 }
 
 .profile-card .btn-primary:hover {
-  background: #27ae60;
+  background-color: #00b873;
+  transform: translateY(-1px);
 }
 
 .profile-card .stats {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e1e1e1;
 }
 
 .profile-card .stats div {
   text-align: center;
-  color: #1b5e20;
+  flex: 1;
+}
+
+.profile-card .stats strong {
+  display: block;
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.profile-card .stats p {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
 }
 
 /* Center Panel Cards */
@@ -390,4 +408,122 @@ body {
 
 .profile-menu a:hover {
   background-color: #f0f0f0;
+}
+.completion-score {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.score-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  position: relative;
+}
+
+.score-circle::before {
+  content: '';
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background: white;
+  border-radius: 50%;
+}
+
+.score-circle span {
+  position: relative;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.completion-score p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #666;
+}
+.profile-photo-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.upload-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #00d084;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+  background: #00b873;
+  transform: scale(1.1);
+}
+
+.resume-upload-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.resume-upload-section h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.resume-upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #00d084;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.resume-upload-button:hover {
+  background: #00b873;
+  transform: translateY(-1px);
+}
+
+.view-resume-link {
+  display: block;
+  margin-top: 10px;
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.view-resume-link:hover {
+  text-decoration: underline;
+}
+
+.upload-status {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #666;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

@@ -1,6 +1,7 @@
 // AppliedJobs.jsx
 import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
+
 import {
   Search,
   Filter,
@@ -39,34 +40,55 @@ const AppliedJobs = () => {
   const [error, setError] = useState(null);
 
   const jobsPerPage = 6;
+  const [appliedJobs, setAppliedJobs] = useState(new Set()); // Set of jobIds applied by the user
 
-  useEffect(() => {
-    const fetchAppliedJobs = async () => {
-      try {
-        const response = await axios.get("http://localhost:9091/api/applied-jobs/user/1");
-        const appliedJobs = response.data;
+  const API = axios.create({
+    baseURL: 'http://localhost:9091/api',
+  });
+  
+  // If you are using JWT token authentication, add token here
+  API.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token'); // adjust based on your token storage
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+  
 
-        const transformedJobs = appliedJobs.map((job) => ({
-          id: job.id,
-          title: job.job.title,
-          company: job.job.company,
-          status: job.status,
-          date: new Date(job.appliedDate).toISOString().split("T")[0],
-          location: job.job.location,
-          role: job.job.tittle || "N/A",
-        }));
 
-        setJobs(transformedJobs);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch applied jobs");
-        setLoading(false);
-        console.error("Error fetching applied jobs:", err);
-      }
-    };
 
-    fetchAppliedJobs();
-  }, []);
+// Fetch jobs applied by the user
+// Inside the useEffect for fetching applied jobs
+useEffect(() => {
+  const userId = localStorage.getItem("userId");
+  console.log("User ID:", userId); // Check if user ID is correct
+  const fetchAppliedJobs = async () => {
+    setLoading(true); // Set loading to true initially
+    try {
+      const response = await axios.get(`http://localhost:9091/api/applied-jobs/${userId}/applied`);
+      console.log("Response from API:", response.data);
+      setAppliedJobs(response.data); // Set the jobs
+      setLoading(false); // Set loading to false once data is fetched
+    } catch (error) {
+      console.error("Error fetching applied jobs:", error);
+      setError("Failed to fetch applied jobs");
+      setLoading(false); // Set loading to false even in case of error
+    }
+  };
+
+  fetchAppliedJobs();
+}, []); // This effect runs once on component mount
+
+useEffect(() => {
+  console.log("Applied Jobs:", appliedJobs); // Log the applied jobs state after it gets set
+}, [appliedJobs]); // This effect runs only once on component mount
+
+
+
+// Empty dependency array means this effect runs only once when the component mounts
+
+
 
   useEffect(() => {
     localStorage.setItem("favoriteJobs", JSON.stringify(favoriteJobs));
@@ -221,9 +243,19 @@ const AppliedJobs = () => {
             </div>
           </div>
 
-          <div className="jobs-list">
-            {paginatedJobs.map((job) => (
-              <div key={job.id} className="job-card" onClick={() => openJobModal(job)}>
+          {/* Render Applied Jobs */}
+          <div className={`applied-jobs-container ${darkMode ? "dark-mode" : ""}`}>
+    {loading && <div className="loading-message">Loading your applications...</div>}
+    {error && <div className="error-message">{error}</div>}
+    {!loading && !error && (
+      <div className="jobs-list">
+        {appliedJobs.length === 0 ? (
+          <div>No jobs applied yet!</div>
+        ) : (
+          appliedJobs.map((appliedJob) => {
+            const { job, appliedDate, status } = appliedJob; // Destructure the nested job object
+            return (
+              <div key={job.id} className="job-card">
                 <div className="card-header">
                   <h3>{job.title}</h3>
                   <Heart
@@ -235,47 +267,18 @@ const AppliedJobs = () => {
                   />
                 </div>
                 <p><strong>Company:</strong> {job.company}</p>
-                <p className={`status ${job.status.toLowerCase()}`}><strong>Status:</strong> {job.status}</p>
-                <p><strong>Date Applied:</strong> {job.date}</p>
+                <p className={`status ${status.toLowerCase()}`}><strong>Status:</strong> {status}</p>
+                <p><strong>Date Applied:</strong> {new Date(appliedDate).toLocaleDateString()}</p>
                 <p><strong>Location:</strong> {job.location}</p>
                 <p><strong>Role:</strong> {job.role}</p>
               </div>
-            ))}
-          </div>
+            );
+          })
+        )}
+      </div>
+    )}
+  </div>
 
-          <div className="pagination-controls">
-            <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
-              ⬅️ Prev
-            </button>
-            <span>Page {currentPage}</span>
-            <button
-              onClick={() =>
-                setCurrentPage((prev) =>
-                  prev * jobsPerPage < filteredJobs.length ? prev + 1 : prev
-                )
-              }
-              disabled={currentPage * jobsPerPage >= filteredJobs.length}
-            >
-              Next ➡️
-            </button>
-          </div>
-
-          {/* Job Details Modal */}
-          {isModalOpen && selectedJob && (
-            <div className="modal-overlay" onClick={closeJobModal}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button" onClick={closeJobModal}>
-                  ×
-                </button>
-                <h3>{selectedJob.title}</h3>
-                <p><strong>Company:</strong> {selectedJob.company}</p>
-                <p><strong>Status:</strong> {selectedJob.status}</p>
-                <p><strong>Date Applied:</strong> {selectedJob.date}</p>
-                <p><strong>Location:</strong> {selectedJob.location}</p>
-                <p><strong>Role:</strong> {selectedJob.role}</p>
-              </div>
-            </div>
-          )}
         </>
       )}
 
