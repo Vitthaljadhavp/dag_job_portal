@@ -6,9 +6,7 @@ import com.joble.joble.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+
 import java.util.* ;
 
 @Service
@@ -81,5 +79,10 @@ public class UserService {
 
     public List<User> findUsersByRole(String role){
         return userRepository.findByRole(role) ;
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 }

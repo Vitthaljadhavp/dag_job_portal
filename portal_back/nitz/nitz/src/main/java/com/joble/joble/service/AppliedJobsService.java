@@ -55,7 +55,15 @@ public class AppliedJobsService {
         return appliedJobsRepo.findByJob(job);
     }
 
+    public List<AppliedJobs> getApplications(Long jobId) {
+        return appliedJobsRepo.findByJobId(jobId);
+    }
+
     public List<AppliedJobs> getAppliedJobsByUserId(Long userId) {
         return appliedJobsRepo.findByUserId(userId); // Assuming you have a method to fetch jobs by userId
+    }
+
+    public List<AppliedJobs> getAllAppliedJobs() {
+        return appliedJobsRepo.findAll();
     }
 }

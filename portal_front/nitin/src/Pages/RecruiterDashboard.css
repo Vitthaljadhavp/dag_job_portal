@@ -1,4 +1,4 @@
-/* Profile Picture Button */
+/* Profile Picture Button
 .profile-dropdown {
     position: relative;
     display: inline-block;
@@ -12,7 +12,6 @@
     border: 2px solid #ddd;
   }
   
-  /* Dropdown Menu */
   .profile-menu {
     position: absolute;
     right: 0;
@@ -31,7 +30,7 @@
     display: flex;
   }
   
-  /* Menu Items */
+
   .profile-menu a {
     padding: 10px;
     text-decoration: none;
@@ -45,7 +44,7 @@
     background: #f0f0f0;
   }
   
-  /* Dropdown Inside Settings */
+  
   .settings-dropdown {
     display: none;
     flex-direction: column;
@@ -56,13 +55,13 @@
     display: flex;
   }
   
-  /* Modal Styles */
+
   .modal-content {
     padding: 20px;
     border-radius: 10px;
   }
   
-  /* Responsive Fix */
+ 
   @media (max-width: 768px) {
     .profile-menu {
       width: 180px;
@@ -72,7 +71,7 @@
   .banner-container {
     position: relative;
     width: 100%;
-    height: 300px; /* Adjust as needed */
+    height: 300px; 
     overflow: hidden;
 }
 
@@ -141,13 +140,13 @@
 
 .banner-img {
   width: 100%;
-  height: 20px; /* Adjust as needed */
+  height: 20px; 
   object-fit: cover;
 }
 
 .banner-section {
   position: relative;
-  margin-top: 0px; /* Adjust based on navbar height */
+  margin-top: 0px; 
 }
 
 .navbar {
@@ -155,14 +154,14 @@
   width: 100%;
   top: 0;
   left: 0;
-  background: transparent; /* Initially transparent */
+  background: transparent; 
   transition: background 0.3s ease-in-out;
   padding: 10px 20px;
   z-index: 1000;
 }
 
 .navbar.scrolled {
-  background: rgba(0, 0, 0, 0.8); /* Dark background on scroll */
+  background: rgba(0, 0, 0, 0.8); 
 }
 
 .navbar-left .portal-name {
@@ -182,4 +181,173 @@
 
 .navbar-right .logout-button:hover {
   background: darkred;
+}
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+/* RecruiterDashboard.css */
+
+.recruiter-dashboard {
+  background-color: #ebefeb;
+  min-height: 100vh;
+}
+
+
+.navbar-cente{
+  background-color: #18523c;
+}
+
+
+.navbar {
+  padding: 15px 30px;
+  background-color: #2d5a35;
+  transition: all 0.3s;
+}
+
+.navbar.scrolled {
+  padding: 10px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.portal-name {
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.banner-section {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.banner-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  width: 80%;
+}
+
+.banner-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.banner-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+
+
+.stats-container {
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  background-color: white;
+  border-left: 4px solid #343a40;
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #28a745;
+  border-left-color: #218838;
+}
+
+.stat-card:hover .card-title,
+.stat-card:hover .stat-number {
+  color: white !important;
+}
+
+.stat-card .card-title {
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+
+
+.stat-card .stat-number {
+  color: #343a40;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.stat-card:hover .stat-number {
+  color: white;
+}
+
+.stat-card .progress {
+  height: 6px;
+  background-color: #e9ecef;
+}
+
+
+.social-icon {
+  color: #6c757d;
+  transition: color 0.3s;
+}
+
+.social-icon:hover {
+  color: #325e8a;
+}
+
+@media (max-width: 768px) {
+  .banner-content h1 {
+    font-size: 1.8rem;
+  }
+  
+  .banner-content p {
+    font-size: 1rem;
+  }
+  
+  .navbar-center {
+    display: none;
+  }
 }

@@ -73,11 +73,6 @@ public ResponseEntity<List<AppliedJobs>> getAppliedJobsByUserId(@PathVariable Lo
 }
 
 
-
-
-
-    
-
     // Get applied jobs by user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<AppliedJobs>> getUserApplications(@PathVariable Long userId) {
@@ -89,6 +84,18 @@ public ResponseEntity<List<AppliedJobs>> getAppliedJobsByUserId(@PathVariable Lo
     @GetMapping("/job/{jobId}")
     public ResponseEntity<List<AppliedJobs>> getJobApplications(@PathVariable Long jobId) {
         List<AppliedJobs> applications = appliedJobsService.getJobApplications(jobId);
+        return ResponseEntity.ok(applications);
+    }
+
+    @GetMapping("/{jobId}/applications")
+    public ResponseEntity<List<AppliedJobs>> getJobApplicants(@PathVariable Long jobId) {
+        List<AppliedJobs> applications = appliedJobsService.getJobApplications(jobId);
+        return ResponseEntity.ok(applications);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AppliedJobs>> getAllAppliedJobs() {
+        List<AppliedJobs> applications = appliedJobsService.getAllAppliedJobs();
         return ResponseEntity.ok(applications);
     }
 }

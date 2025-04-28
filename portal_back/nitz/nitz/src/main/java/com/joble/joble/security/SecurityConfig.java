@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .requestMatchers("/oauth2/**", "/login/**", "/auth/user").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/users/job_seekers").permitAll()
+                .requestMatchers("/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/forgot-password").permitAll()
                 
                 // Job Seeker Profile Endpoints (Authenticated Only)

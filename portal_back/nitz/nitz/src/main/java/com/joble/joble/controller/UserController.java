@@ -150,5 +150,10 @@ public ResponseEntity<?> getJobSeekers() {
     }
 }
 
+@GetMapping("/{userId}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+
 
 }
