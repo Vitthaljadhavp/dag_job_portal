@@ -226,6 +226,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './ApplicationInsights.css'
+import { useNavigate } from "react-router-dom";
+
 
 function ApplicationInsights() {
   const [insightsData, setInsightsData] = useState({
@@ -310,9 +312,58 @@ function ApplicationInsights() {
     alert("Navigating to Settings...");
   };
 
-  const handleLogoutClick = () => {
-    alert("Logging out...");
-  };
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
+  const navigate = useNavigate();
+  
+    useEffect(() => {                                         // Check authentication on mount
+          const token = localStorage.getItem("token");
+    
+          if (!token) {
+            console.log("No token found. Redirecting to login...");
+            navigate("/login");
+          } else {
+            console.log("Token found. User is authenticated.");
+            setCheckingAuth(false);
+          }
+        }, [navigate]);
+    
+        if (checkingAuth) {
+          return null;
+        }
+    
+        
+  
+    const handleLogout = () => {                              // HANDLE LOGOUT
+      console.log("Logout initiated...");
+  
+      const confirmLogout = window.confirm("Are you sure you want to log out?");
+      console.log("User confirmation for logout:", confirmLogout);
+  
+      if (confirmLogout) {
+        console.log("Clearing localStorage and sessionStorage...");
+        
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("isProfileComplete");
+        sessionStorage.clear();
+  
+        setLoggedIn(false);
+        console.log("Logged out from state.");
+  
+        console.log("Redirecting to login page...");
+        navigate("/login");
+  
+        // Hard reload to prevent back button cache
+        setTimeout(() => {
+          window.location.reload();
+          console.log("Page reloaded after logout.");
+        }, 300);
+      } else {
+        console.log("Logout cancelled by user.");
+      }
+    };
 
   // Export Job Seekers Data as CSV
   const exportData = () => {
@@ -343,16 +394,15 @@ function ApplicationInsights() {
 
         {/* Center */}
         <div className="navbar-section navbar-center">
-          <button className="nav-link">Home</button>
-          <button className="nav-link">ABC</button>
-          <button className="nav-link">DEF</button>
+          <a href="/recruiter-dashboard" className="nav-link" >Home</a>
+          <a href="/ApplicationInsights" className="nav-link">Application Insights</a>
         </div>
 
         {/* Right */}
         <div className="navbar-section navbar-right">
-          <div className="profile-container">
+          {/* <div className="profile-container">
             <button className="profile-button" onClick={toggleDropdown}>
-              Profile ⬇️
+              Profile ⬇
             </button>
 
             {showDropdown && (
@@ -363,12 +413,15 @@ function ApplicationInsights() {
                 <button className="dropdown-item" onClick={handleSettingsClick}>
                   Settings
                 </button>
-                <button className="dropdown-item logout" onClick={handleLogoutClick}>
+                <button className="dropdown-item logout" onClick={handleLogout}>
                   Logout
                 </button>
               </div>
             )}
-          </div>
+          </div> */}
+        </div>
+        <div>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       </nav>
 

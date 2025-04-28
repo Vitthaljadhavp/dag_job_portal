@@ -423,7 +423,6 @@ import { FiEdit, FiTrash2, FiEye, FiCalendar, FiDollarSign, FiMapPin, FiBriefcas
 import { FaLinkedin, FaTwitter, FaFacebook } from 'react-icons/fa';
 
 const RecruiterDashboard = () => {
-  const navigate = useNavigate();
   const [showEnquiry, setShowEnquiry] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -553,22 +552,58 @@ const RecruiterDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-      localStorage.removeItem("authToken");
-      sessionStorage.clear();
-      setTimeout(() => navigate("/login"), 500);
-    }
-  };
+  const [checkingAuth, setCheckingAuth] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
+    const navigate = useNavigate();
+    
+      useEffect(() => {                                         // Check authentication on mount
+            const token = localStorage.getItem("token");
+      
+            if (!token) {
+              console.log("No token found. Redirecting to login...");
+              navigate("/login");
+            } else {
+              console.log("Token found. User is authenticated.");
+              setCheckingAuth(false);
+            }
+          }, [navigate]);
+      
+          if (checkingAuth) {
+            return null;
+          }
+      
+          
+    
+      const handleLogout = () => {                              // HANDLE LOGOUT
+        console.log("Logout initiated...");
+    
+        const confirmLogout = window.confirm("Are you sure you want to log out?");
+        console.log("User confirmation for logout:", confirmLogout);
+    
+        if (confirmLogout) {
+          console.log("Clearing localStorage and sessionStorage...");
+          
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("isProfileComplete");
+          sessionStorage.clear();
+    
+          setLoggedIn(false);
+          console.log("Logged out from state.");
+    
+          console.log("Redirecting to login page...");
+          navigate("/login");
+    
+          // Hard reload to prevent back button cache
+          setTimeout(() => {
+            window.location.reload();
+            console.log("Page reloaded after logout.");
+          }, 300);
+        } else {
+          console.log("Logout cancelled by user.");
+        }
+      };
   
 
   return (
@@ -586,15 +621,14 @@ const RecruiterDashboard = () => {
           <Button variant="outline-light" className="mx-2" onClick={() => navigate("/recruiter-dashboard")}>
             Dashboard
           </Button>
-          <Button variant="outline-light" className="mx-2" onClick={() => navigate("/recruiter-job-list")}>
-            Job Listings
-          </Button>
           <Button variant="outline-light" className="mx-2" onClick={() => navigate("/ApplicationInsights")}>
-            Analytics
+            Appications Insights
           </Button>
-        </div>
 
-        <Dropdown>
+        </div>
+        <button className ="logout" onClick={handleLogout}>Logout</button>
+
+        {/* <Dropdown>
           <Dropdown.Toggle variant="light" id="profile-dropdown">
             <img
               src={userProfile?.profilePic || "/default-profile.png"}
@@ -603,7 +637,7 @@ const RecruiterDashboard = () => {
               width="40"
               height="40"
             />
-            <span className="ms-2 d-none d-md-inline">Swapnil</span>
+            <span className="ms-2 d-none d-md-inline"></span>
           </Dropdown.Toggle>
           <Dropdown.Menu align="end">
             <Dropdown.Item>My Profile</Dropdown.Item>
@@ -616,7 +650,7 @@ const RecruiterDashboard = () => {
             <Dropdown.Divider />
             <Dropdown.Item href="/login" onClick={handleLogout}>Logout</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown> */}
       </nav>
 
       {/* Banner Carousel */}

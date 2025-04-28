@@ -108,6 +108,7 @@ const JobListingDashboard = () => {
       return null;
     }
 
+    
     const handleLogout = () => {                              // HANDLE LOGOUT
       console.log("Logout initiated...");
 

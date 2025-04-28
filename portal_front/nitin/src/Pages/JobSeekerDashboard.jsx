@@ -15,6 +15,43 @@ const JobSeekerDashboard = () => {
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
+  
+      
+          
+    
+      const handleLogout = () => {                              // HANDLE LOGOUT
+        console.log("Logout initiated...");
+    
+        const confirmLogout = window.confirm("Are you sure you want to log out?");
+        console.log("User confirmation for logout:", confirmLogout);
+    
+        if (confirmLogout) {
+          console.log("Clearing localStorage and sessionStorage...");
+          
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("isProfileComplete");
+          sessionStorage.clear();
+    
+          setLoggedIn(false);
+          console.log("Logged out from state.");
+    
+          console.log("Redirecting to login page...");
+          navigate("/login");
+    
+          // Hard reload to prevent back button cache
+          setTimeout(() => {
+            window.location.reload();
+            console.log("Page reloaded after logout.");
+          }, 300);
+        } else {
+          console.log("Logout cancelled by user.");
+        }
+      };
+
+      
+
   const calculateProfileScore = (data) => {
     let score = 0;
     const totalFields = 11; // Total number of profile fields
@@ -56,6 +93,41 @@ const JobSeekerDashboard = () => {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  
+  const [checkingAuth, setCheckingAuth] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
+    
+      useEffect(() => {                                         // Check authentication on mount
+            const token = localStorage.getItem("token");
+      
+            if (!token) {
+              console.log("No token found. Redirecting to login...");
+              navigate("/login");
+            } else {
+              console.log("Token found. User is authenticated.");
+              setCheckingAuth(false);
+            }
+          }, [navigate]);
+      
+          if (checkingAuth) {
+            return null;
+          }
+
 
   const handleFileUpload = async (type, file) => {
     try {
@@ -110,20 +182,7 @@ const JobSeekerDashboard = () => {
   const toggleProfileMenu = () => setShowProfileMenu(prev => !prev);
 
   // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setShowProfileMenu(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
+  
 
   const ProfileDropdownMenu = ({ show }) => (
     <div className={`profile-menu ${show ? "show" : ""}`}>
@@ -133,7 +192,7 @@ const JobSeekerDashboard = () => {
       <a href="#saved-jobs"><FaBookmark /> Saved Jobs</a>
       <a href="#alerts"><FaBell /> Job Alerts</a>
       <a href="#settings"><FaCog /> Settings</a>
-      <a href="#logout"><FaSignOutAlt /> Logout</a>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 

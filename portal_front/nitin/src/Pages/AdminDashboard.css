@@ -1,4 +1,4 @@
-/* Reset styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -10,14 +10,14 @@ body {
   background-color: #f5f7fa;
 }
 
-/* App Layout */
+
 .app {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-/* Navbar */
+
 .navbar {
   height: 60px;
   background: linear-gradient(to right, #007bff, #0056b3);
@@ -56,13 +56,13 @@ body {
   font-weight: 500;
 }
 
-/* Main Layout */
+
 .main {
   display: flex;
   margin-top: 60px;
 }
 
-/* Sidebar */
+
 .sidebar {
   width: 220px;
   background-color: #1e1e2f;
@@ -88,17 +88,16 @@ body {
 }
 
 .sidebar ul li.active {
-  background-color: #007bff;
+  background-color: #5291d5;
 }
 
-/* Dashboard Section */
 .dashboard {
   flex: 1;
   padding: 30px;
   overflow-y: auto;
 }
 
-/* Section Styling */
+
 .users-section, .jobs-section, .settings-section {
   background-color: #ffffff;
   border-radius: 10px;
@@ -112,7 +111,7 @@ body {
   color: #333;
 }
 
-/* Table Styling */
+
 .users-table {
   width: 100%;
   border-collapse: collapse;
@@ -140,4 +139,618 @@ body {
 .users-table tr:hover {
   background-color: #f1f1f1;
   transition: background-color 0.2s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Admin Dashboard Specific Styles - Won't affect other pages */
+.admin-app {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.admin-dark-mode {
+  background-color: #1a1a2e;
+  color: #f8f9fa;
+}
+
+/* Navbar Styles */
+.admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #00a859;
+  padding: 0.8rem 2rem;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-navbar-search {
+  flex: 1;
+  max-width: 600px;
+}
+
+.admin-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.admin-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.admin-search-input {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background-color: white;
+  color: #111827;
+  transition: all 0.3s ease;
+}
+
+.admin-search-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.admin-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-icon-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-notification-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-notification-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
+/* Profile Dropdown */
+.admin-profile-dropdown {
+  position: relative;
+}
+
+.admin-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-dropdown-content {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background-color: white;
+  min-width: 200px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  overflow: hidden;
+}
+
+.admin-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-dropdown-item:hover {
+  background-color: #f3f4f6;
+  color: #00a859;
+}
+
+.admin-logout-item {
+  color: #ef4444;
+}
+
+/* Dark Mode Styles */
+.admin-dark-mode .admin-search-input {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.admin-dark-mode .admin-dropdown-content {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.admin-dark-mode .admin-dropdown-item {
+  color: #f3f4f6;
+}
+
+.admin-dark-mode .admin-dropdown-item:hover {
+  background-color: #374151;
+  color: #a5b4fc;
+}
+
+/* Rest of your existing admin dashboard styles */
+/* ... */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Admin Dashboard Specific Styles */
+.admin-app {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.admin-dark-mode {
+  background-color: #1a1a2e;
+  color: #f8f9fa;
+}
+
+/* Navbar Styles */
+.admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #00a859;
+  padding: 0.8rem 2rem;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-navbar-search {
+  flex: 1;
+  max-width: 600px;
+}
+
+.admin-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.admin-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.admin-search-input {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background-color: white;
+  color: #111827;
+  transition: all 0.3s ease;
+}
+
+.admin-search-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.admin-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-icon-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-notification-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-notification-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
+/* Profile Dropdown */
+.admin-profile-dropdown {
+  position: relative;
+}
+
+.admin-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-dropdown-content {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background-color: white;
+  min-width: 200px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  overflow: hidden;
+}
+
+.admin-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-dropdown-item:hover {
+  background-color: #f3f4f6;
+  color: #00a859;
+}
+
+.admin-logout-item {
+  color: #ef4444;
+}
+
+/* Dark Mode Styles */
+.admin-dark-mode .admin-search-input {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+.admin-dark-mode .admin-dropdown-content {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.admin-dark-mode .admin-dropdown-item {
+  color: #f3f4f6;
+}
+
+.admin-dark-mode .admin-dropdown-item:hover {
+  background-color: #374151;
+  color: #a5b4fc;
+}
+
+/* Existing Dashboard Styles */
+.main {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: white;
+  padding: 1.5rem 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 60px);
+  position: sticky;
+  top: 60px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 0.8rem 1.5rem;
+  margin: 0.3rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.sidebar li:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: #4361ee;
+}
+
+.sidebar li.active {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: #4361ee;
+  border-right: 3px solid #4361ee;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f5f7fa;
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.dab-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.dab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.dab-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.2rem;
+}
+
+.users-section, .job-postings-section, .applications-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+}
+
+/* Dark Mode Overrides */
+.admin-dark-mode .sidebar {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.admin-dark-mode .sidebar li {
+  color: #d1d5db;
+}
+
+.admin-dark-mode .sidebar li:hover {
+  background-color: rgba(165, 180, 252, 0.1);
+  color: #a5b4fc;
+}
+
+.admin-dark-mode .sidebar li.active {
+  background-color: rgba(165, 180, 252, 0.1);
+  color: #a5b4fc;
+  border-right-color: #a5b4fc;
+}
+
+.admin-dark-mode .dashboard-content {
+  background-color: #111827;
+}
+
+.admin-dark-mode .stat-card,
+.admin-dark-mode .dab-section,
+.admin-dark-mode .users-section,
+.admin-dark-mode .job-postings-section,
+.admin-dark-mode .applications-section {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.admin-dark-mode .dab-card {
+  background-color: #374151;
+}
+
+.admin-dark-mode table th {
+  background-color: #374151;
+}
+
+.admin-dark-mode table tr:hover {
+  background-color: rgba(165, 180, 252, 0.1);
 }
