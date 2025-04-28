@@ -186,9 +186,7 @@ const JobSeekerDashboard = () => {
 
   const ProfileDropdownMenu = ({ show }) => (
     <div className={`profile-menu ${show ? "show" : ""}`}>
-      <a href="#profile"><FaUserCircle /> My Profile</a>
-      <a href="#resume"><FaFileAlt /> My Resume</a>
-      <a href="#applications"><MdWork /> Job Applications</a>
+      <a href="/ProfileDashboard"><FaUserCircle /> My Profile</a>
       <a href="#saved-jobs"><FaBookmark /> Saved Jobs</a>
       <a href="#alerts"><FaBell /> Job Alerts</a>
       <a href="#settings"><FaCog /> Settings</a>
@@ -359,8 +357,6 @@ const JobSeekerDashboard = () => {
             <a href="#">Opportunities</a>
             <div className="dropdown-content">
               <a href="/JobListingDashboard">Recommended jobs</a>
-              <a href="#">Job invites</a>
-              <a href="#">Jobs from alerts</a>
               <a href="/AppliedJobs">Application status</a>
               <a href="#">Saved jobs</a>
             </div>

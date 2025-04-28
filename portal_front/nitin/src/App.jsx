@@ -13,6 +13,7 @@ import JobListingDashboard from "./Pages/JobListingDashboard";
 import Footer from "./components/Footer";
 import AppliedJobs from "./Pages/AppliedJobs";
 import ApplicationInsights from "./Pages/ApplicationInsights";
+import ProfileDashboard from "./Pages/ProfileDashboard" ;
 
 
 
@@ -35,7 +36,9 @@ function App() {
         <Route path="/JobListingDashboard" element={<JobListingDashboard />} /> 
         <Route path="/AppliedJobs" element={<AppliedJobs />} />
         <Route path="/ApplicationInsights" element={<ApplicationInsights/>} />
-      
+        <Route path="/ProfileDashboard" element={<ProfileDashboard/>} />
+
+
 
         {/* ✅ New Route */}
       </Routes>

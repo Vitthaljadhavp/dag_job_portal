@@ -1,0 +1,92 @@
+/* Navbar Styling */
+.navbar1 {
+    background-color: #23d97b;
+    color: white;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 15px 20px;
+  }
+  
+  .navbar-brand1 {
+    position: absolute;
+    left: 20px; /* 👈 now on the left side */
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .navbar-links1 {
+    margin: 0 auto; /* 👈 centers the links */
+    display: flex;
+    gap: 30px;
+  }
+  
+  .navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .navbar-links a:hover {
+    text-decoration: underline;
+  }
+  
+  
+  /* Profile Form Container */
+  .profile-form-container {
+    max-width: 600px;
+    margin: 60px auto; /* Top margin to push below navbar */
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-form-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+  }
+  
+  /* Profile Form Styling */
+  .profile-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-form input,
+  .profile-form select,
+  .profile-form textarea {
+    margin-bottom: 20px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .profile-form input[type="file"] {
+    padding: 8px;
+  }
+  
+  .profile-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  /* Save Button Styling */
+  .profile-form button {
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profile-form button:hover {
+    background-color: #0056b3;
+  }
+  
